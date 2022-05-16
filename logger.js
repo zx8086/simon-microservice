@@ -5,7 +5,7 @@ const options = {
   {
     // level: process.env.LOG_LEVEL || 'debug',
     // levels: winston.config.npm.levels,
-    filename: './logs/kafka-enablement-app.log',
+    filename: './logs/simon-microservice.log',
     handleExceptions: true,
     maxsize: 5242880, // 5MB
     maxFiles: 5
