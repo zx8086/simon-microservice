@@ -129,7 +129,7 @@ run().then(() => console.log("Done"), err => console.log(err));
 
 async function run() {
   const kafka = new Kafka({ 
-    clientId: 'Kafka Microservice',
+    clientId: 'Simon Microservice',
     brokers: ['localhost:9092','localhost:9093'] 
   });
 
