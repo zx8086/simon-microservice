@@ -88,8 +88,8 @@ function errorHandler (err, req, res, next) {
 
 app.get("/", (req, res) => {
     logger.debug('This is the "/" route.')
-    logger.info('Welcome to OpenTelemetry for Kafka Enablement')
-    return res.status(200).send({ message: "Welcome to OpenTelemetry for Kafka Enablement" });
+    logger.info('Welcome to OpenTelemetry & Kafka Enablement Demo')
+    return res.status(200).send({ message: "Welcome to OpenTelemetry & Kafka Enablement Demo" });
 });
 
 app.get("/twilio", (req, res) => {

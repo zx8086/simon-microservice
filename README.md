@@ -1,3 +1,3 @@
-# simon-microserevice
+# simon-microservice
 
-Micro-Service for Kafka Enablemeny & OpenTelemetry
+Micro-Service for Kafka Enablemeny & OpenTelemetry Demo
