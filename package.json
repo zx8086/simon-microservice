@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node -r ./tracing-simon.js simon-service.js",
-    "test": "echo \"Error: no test specified\" "
+    "test": "echo 'no test specified' "
   },
   "author": "Simon Owusu",
   "license": "ISC",
