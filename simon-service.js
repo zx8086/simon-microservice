@@ -222,8 +222,8 @@ app.get("/messages", async (req, res) => {
       run().catch(console.error)
 });
 
-app.get("/multi", async (req, res) => {
-    logger.debug('This is the "/multi" route.')
+app.get("/simon", async (req, res) => {
+    logger.debug('This is the "/simon" route.')
     logger.info("Calling Multiple Micro-Services Correlation...")
 
     const result = await axios({
