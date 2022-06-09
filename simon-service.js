@@ -249,4 +249,3 @@ console.log("Server initialized");
 app.listen(parseInt(PORT, 10), () => {
  console.log(`Listening for requests on http://localhost:${PORT}`);
 });
-
