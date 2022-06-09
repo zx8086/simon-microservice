@@ -29,15 +29,13 @@ const sdk = new opentelemetry.NodeSDK({
   // metricExporter: prometheusExporter,
   instrumentations: 
     [
-      getNodeAutoInstrumentations(),
-      new RouterInstrumentation(),
-      new KafkaJsInstrumentation() 
+      getNodeAutoInstrumentations()
     ]
 });
 
 const provider = new NodeTracerProvider({
   resource: new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: "simon-service",
+        [SemanticResourceAttributes.SERVICE_NAME]: "simon-microservice",
         [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: "Production"
     }),
 });
