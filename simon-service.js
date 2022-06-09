@@ -88,7 +88,7 @@ function errorHandler (err, req, res, next) {
 
 app.get("/", (req, res) => {
     logger.debug('This is the "/" route.')
-    logger.info('Welcome to Simon Micro-Services')
+    logger.info('Welcome to Simon Microservice')
     return res.status(200).send({ message: "Welcome to OpenTelemetry & Kafka Enablement Demo" });
 });
 
@@ -117,8 +117,8 @@ app.get('/quotes', async (req, res) => {
 
   const resp = await axios({
       method: 'POST',
-      url: 'https://enterprise-search.siobytes.com/api/ws/v1/sources/62792164ce144ec6160f323d/documents/bulk_create',
-      headers: {'authorization': 'Bearer mhebumy66bbrch47r3sqyzzb'},
+      url: 'https://siobytes-elk.ent.eu-central-1.aws.cloud.es.io/api/ws/v1/sources/62a1cfaa91109cf4ff0e9907/documents/bulk_create',
+      headers: {'authorization': 'Bearer m92jikugtwfk55qj9mj58y8n'},
       data: [{id : `${id}`, author : `${author}`, quote : `${quote}`, url : `https://programming-quotes-api.herokuapp.com/quotes/${id}`, description : `Programming quotes from programming-quotes-api.herokuapp.com`}]
   });
 
