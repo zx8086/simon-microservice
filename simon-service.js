@@ -88,7 +88,7 @@ function errorHandler (err, req, res, next) {
 
 app.get("/", (req, res) => {
     logger.debug('This is the "/" route.')
-    logger.info('Welcome to OpenTelemetry & Kafka Enablement Demo')
+    logger.info('Welcome to Simon Micro-Services')
     return res.status(200).send({ message: "Welcome to OpenTelemetry & Kafka Enablement Demo" });
 });
 

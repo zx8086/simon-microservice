@@ -1,4 +1,4 @@
-/* tracing-app.js */
+/* tracing-simon.js */
 'use strict';
 
 const opentelemetry = require("@opentelemetry/sdk-node");
@@ -8,10 +8,8 @@ const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventi
 
 const { BasicTracerProvider, ConsoleSpanExporter, SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
 const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
 
-const { MeterProvider, PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics-base');
-const { OTLPMetricExporter } = require('@opentelemetry/exporter-metrics-otlp-http');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
 
 const { getNodeAutoInstrumentations } = require("@opentelemetry/auto-instrumentations-node");
 const { KafkaJsInstrumentation } = require('opentelemetry-instrumentation-kafkajs');
@@ -19,9 +17,9 @@ const { RouterInstrumentation } = require('@opentelemetry/instrumentation-router
 const { SocketIoInstrumentation } = require('opentelemetry-instrumentation-socket.io');
 const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 
-const { diag, DiagConsoleLogger, DiagLogLevel } = require('@opentelemetry/api');
+// const { diag, DiagConsoleLogger, DiagLogLevel } = require('@opentelemetry/api');
 // For troubleshooting, set the log level to DiagLogLevel.DEBUG
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+// diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 // const { PrometheusExporter } = require("@opentelemetry/exporter-prometheus");
 // const prometheusExporter = new PrometheusExporter({ startServer: true });
@@ -33,7 +31,6 @@ const sdk = new opentelemetry.NodeSDK({
     [
       getNodeAutoInstrumentations(),
       new RouterInstrumentation(),
-      // new SocketIoInstrumentation(),
       new KafkaJsInstrumentation() 
     ]
 });
