@@ -60,8 +60,8 @@ jobs:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('package*.json') }}
 
-      - name: Run build script
-        run: npm run build
+      # - name: Run build script
+      #   run: npm run build
 
       - name: Run tests
         env:
