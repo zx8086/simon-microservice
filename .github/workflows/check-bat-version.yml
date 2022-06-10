@@ -2,17 +2,18 @@ name: Check bats version
 on:
   workflow_dispatch:
   push:
+    branches: [ "master" ]
 jobs:
   check-bats-version:
     runs-on: [self-hosted, linux, ARM64]
     strategy:
       matrix:
-        node: [10.x, 12.x, 14.x, 15.x]
+        node-version: [12.x, 14.x, 16.x]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.node-version }}
       - name: Cache node modules
         uses: actions/cache@v3
         env:

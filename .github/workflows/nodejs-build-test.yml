@@ -32,6 +32,7 @@ jobs:
             linting,
             translations,
           ]
+        node-version: [12.x, 14.x, 16.x]
     steps:
       # Each of these ifs needs to be repeated at each step to make sure the required check still runs
       # Even if if doesn't do anything
@@ -48,7 +49,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 16.14.x
+          node-version: ${{ matrix.node-version }}
           cache: npm
 
       - name: Install dependencies
