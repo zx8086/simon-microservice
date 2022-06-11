@@ -60,7 +60,7 @@ async function produce() {
  })
 }
  
-app.get('/errorhandler', (req, res, next) => {
+app.get('/errorhandler', (_req, _res, next) => {
   try {
     throw new error('Wowza!')
   } catch (error) {
@@ -71,6 +71,15 @@ app.get('/errorhandler', (req, res, next) => {
 app.use(logerrors)
 app.use(errorHandler)
 
+app.get("/", (req, res) => {
+    logger.debug('This is the "/" route.')
+    logger.info('Welcome to Simon Microservice')
+    // return res.status(200).send({ message: "Welcome to Simon Microservice" });
+    res.statusCode = 200
+    res.setHeader('Content-Type', 'application/json')
+    res.end('Welcome to Simon Microservice')
+});
+
 function log_errors (err, req, res, next) {
   console.error(err.stack)
   next(err)
@@ -78,12 +87,6 @@ function log_errors (err, req, res, next) {
 function errorHandler (err, req, res, next) {
   res.status(500).send('error!')
 }
-
-app.get("/", (req, res) => {
-    logger.debug('This is the "/" route.')
-    logger.info('Welcome to Simon Microservice')
-    return res.status(200).send({ message: "Welcome to OpenTelemetry & Kafka Enablement Demo" });
-});
 
 app.get("/twilio", (req, res) => {
     logger.debug('This is the "/twilio" route.')
