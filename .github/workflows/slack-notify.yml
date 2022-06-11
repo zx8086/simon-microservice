@@ -12,3 +12,4 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+        MSG_MINIMAL: false # ref,actions url,commit
