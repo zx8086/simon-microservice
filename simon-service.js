@@ -12,20 +12,20 @@ dotenv.config();
 
 async function send_message(message){
 
-    let accountSid = process.env.TWILIO_ACCOUNT_SID;
-    let authToken = process.env.TWILIO_AUTH_TOKEN;
-    let senderPhone = process.env.TWILIO_PHONE_NUMBER;
-    let receiverPhone = process.env.TWILIO_PHONE_RECIPIENT;
+  let accountSid = process.env.TWILIO_ACCOUNT_SID;
+  let authToken = process.env.TWILIO_AUTH_TOKEN;
+  let senderPhone = process.env.TWILIO_PHONE_NUMBER;
+  let receiverPhone = process.env.TWILIO_PHONE_RECIPIENT;
 
-    const client = new twilio(accountSid, authToken);
+  const client = new twilio(accountSid, authToken);
 
-    let response = await client.messages.create({
-        body: message,
-        from: senderPhone,
-        to: receiverPhone
-    });
+  let response = await client.messages.create({
+      body: message,
+      from: senderPhone,
+      to: receiverPhone
+  });
 
-    console.log(response);
+  console.log(response);
 }
 
 const axios = require('axios');
@@ -41,16 +41,16 @@ app.use(cookieParser())
 
 const { Kafka } = require('kafkajs');
 
-const kafka = new Kafka({
+const cdc = new Kafka({
  clientId: 'Kafka Microservice',
  brokers: ['localhost:9092','localhost:9093']
 })
-const consumer = kafka.consumer({ groupId: 'pvh-group' })
+const consumer = cdc.consumer({ groupId: 'pvh-group' })
 
 const TOPIC_NAME = 'testing';
 
 async function produce() {
- const producer = kafka.producer()
+ const producer = cdc.producer()
  await producer.connect()
  await producer.send({
    topic: TOPIC_NAME,
@@ -91,8 +91,10 @@ function errorHandler (err, req, res, next) {
 app.get("/twilio", (req, res) => {
     logger.debug('This is the "/twilio" route.')
     logger.info('Send SMS Message via Twilio API')
-    send_message('Hello There!')
-    return res.status(200).send({ message: "Send SMS Message via Twilio API" });
+    res.statusCode = 200
+    res.setHeader('Content-Type', 'application/json')
+    res.end('Send SMS Message via Twilio API')
+
 });
 
 let requestCount = 0;
