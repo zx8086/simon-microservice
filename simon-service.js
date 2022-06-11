@@ -59,22 +59,22 @@ async function produce() {
  })
 }
  
-app.get('/errorhandler', (_req_, _res_, next) => {
+app.get('/errorhandler', (_req_, _res_, _next_) => {
   try {
     throw new Error('Wowza!')
   } catch (error) {
-    next(error)
+    _next_(error)
   }
 })
 
 app.use(logErrors)
 app.use(errorHandler)
 
-function logErrors (err, _req_, _res_, next) {
+function logErrors (err, _req_, _res_, _next_) {
   console.error(err.stack)
-  next(err)
+  _next_(err)
 }
-function errorHandler (err, _req_, _res_, next) {
+function errorHandler (err, _req_, _res_, _next_) {
   res.status(500).send('Error!')
 }
 
@@ -175,7 +175,7 @@ app.get("/go", async (_req_, _res_) => {
     return res.status(200).send({ message: "Calling Golang Service..." });
 });
 
-app.get('/error', (_req_, _res_, next) => {
+app.get('/error', (_req_, _res_, _next_) => {
   try {
     throw new Error('FATAL !')
   } catch (error) {
@@ -225,11 +225,11 @@ app.get("/simon", async (_req_, _res_) => {
 app.use(logErrors)
 app.use(errorHandler)
 
-function logErrors (err, _req_, _res_, next) {
+function logErrors (err, _req_, _res_, _next_) {
   console.error(err.stack)
-  next(err)
+  _next_(err)
 }
-function errorHandler (err, _req_, _res_, next) {
+function errorHandler (err, _req_, _res_, _next_) {
   res.status(500).send('Error!')
 }
 
