@@ -1,6 +1,6 @@
 "use strict";
 
-const express = require("express")
+// const express = require("express")
 const twilio = require('twilio')
 const dotenv = require('dotenv')
 const node_cron = require('node-cron')
@@ -15,14 +15,17 @@ dotenv.config();
 
 const PORT = process.env.PORT
 
-const app = express()
+// const app = express()
+
+let express = require('express');
+let app = express(); // Sensitive
+
+// app.get('/', function (req, res) {
+//   res.send('hello')
+// });
+
 app.use(httpLogger)
 app.use(cookieParser())
-
-/*
-app.use(logerrors)
-app.use(errorHandler)
-*/
 
 const cdc = new Kafka({
  clientId: 'Kafka Microservice',
@@ -61,15 +64,7 @@ async function send_message(message){
   console.log(response);
 }
 
-app.get('/errorhandler', (_req, _res, next) => {
-  try {
-    throw new error('Wowza!')
-  } catch (error) {
-    next(error)
-  }
-})
-
-app.get("/", (_req, res) => {
+app.get("/", function (_req, res) {
     logger.debug('This is the "/" route.')
     logger.info('Welcome to Simon Microservice')
     res.statusCode = 200
@@ -77,7 +72,7 @@ app.get("/", (_req, res) => {
     res.end('Welcome to Simon Microservice')
 });
 
-app.get("/twilio", (_req, res) => {
+app.get("/twilio", function (_req, res) {
     logger.debug('This is the "/twilio" route.')
     logger.info('Send SMS Message via Twilio API')
     res.statusCode = 200
@@ -148,7 +143,7 @@ async function run() {
 
 })
 
-app.get('/health', (_req, res) => {
+app.get('/health', function (_req, res) {
     logger.debug('This is the "/health" route.')
     logger.info("Application is HEALTHY")
     res.statusCode = 200
@@ -167,7 +162,7 @@ app.get("/go", async (_req, res) => {
     return res.status(200).send({ message: "Calling Golang Service..." });
 });
 
-app.get('/error', (_req, res) => {
+app.get('/error', function (_req, res)  {
   try {
     throw new error('FATAL !')
   } catch (error) {
@@ -187,16 +182,6 @@ app.get("/simon", async (_req, res) => {
     })
     return res.status(200).send({ message: "Calling Multiple Micro-Services Correlation..." });
 });
-
-/* 
-function logerrors (err, _req, _res, next) {
-  console.error(err.stack)
-  next(err)
-}
-function errorHandler (err, _req, res, next) {
-  res.status(500).send('error!')
-}
-*/
 
 console.log("Server initialized");
 

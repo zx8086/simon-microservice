@@ -1,5 +1,5 @@
 on: [push]
-
+name: Slack-Github-Action
 jobs:
   new_push_job:
     runs-on: ubuntu-latest
