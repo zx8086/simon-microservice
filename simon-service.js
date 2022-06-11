@@ -66,16 +66,15 @@ app.get('/errorhandler', (_req, _res, next) => {
   }
 })
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
     logger.debug('This is the "/" route.')
     logger.info('Welcome to Simon Microservice')
-    // return res.status(200).send({ message: "Welcome to Simon Microservice" });
     res.statusCode = 200
     res.setHeader('Content-Type', 'application/json')
     res.end('Welcome to Simon Microservice')
 });
 
-app.get("/twilio", (req, res) => {
+app.get("/twilio", (_req, res) => {
     logger.debug('This is the "/twilio" route.')
     logger.info('Send SMS Message via Twilio API')
     res.statusCode = 200
@@ -148,13 +147,13 @@ async function run() {
 
 })
 
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
     logger.debug('This is the "/health" route.')
     logger.info("Application is HEALTHY")
     return res.status(200).send({ message: `Application is HEALTHY` });
 });
 
-app.get("/go", async (req, res) => {
+app.get("/go", async (_req, res) => {
     logger.debug('This is the "/go" route.')
     logger.info("Calling Golang Service...")
 
@@ -165,7 +164,7 @@ app.get("/go", async (req, res) => {
     return res.status(200).send({ message: "Calling Golang Service..." });
 });
 
-app.get('/error', (req, res, next) => {
+app.get('/error', (_req, res, next) => {
   try {
     throw new error('FATAL !')
   } catch (error) {
@@ -182,7 +181,7 @@ app.post("/messages", async (req, res) => {
     return res.status(200).send({ message: `Kafka Enablement - Posted Kafka message to TOPIC - ${TOPIC_NAME}` });
 });
 
-app.get("/messages", async (req, res) => {
+app.get("/messages", async (_req, res) => {
     logger.debug('This is the "/messages" route.')
     logger.info(`Getting Kafka messages to TOPIC - ${TOPIC_NAME}`)
 
@@ -201,7 +200,7 @@ app.get("/messages", async (req, res) => {
       run().catch(console.error)
 });
 
-app.get("/simon", async (req, res) => {
+app.get("/simon", async (_req, res) => {
     logger.debug('This is the "/simon" route.')
     logger.info("Calling Multiple Micro-Services Correlation...")
 
