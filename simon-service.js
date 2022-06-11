@@ -1,45 +1,25 @@
 "use strict";
 
-const express = require("express");
-const app = express();
-const PORT = process.env.PORT || "8070";
-
-const twilio = require('twilio');
-const dotenv = require('dotenv');
-const node_cron = require('node-cron');
+const express = require("express")
+const twilio = require('twilio')
+const dotenv = require('dotenv')
+const node_cron = require('node-cron')
+const axios = require('axios')
+const logger = require('./logger')
+const { configFromPath } = require('./util')
+const httpLogger = require('./httpLogger')
+const cookieParser = require('cookie-parser')
+const { Kafka } = require('kafkajs')
 
 dotenv.config();
 
-async function send_message(message){
+const PORT = process.env.PORT || "8070";
 
-  let accountSid = process.env.TWILIO_ACCOUNT_SID;
-  let authToken = process.env.TWILIO_AUTH_TOKEN;
-  let senderPhone = process.env.TWILIO_PHONE_NUMBER;
-  let receiverPhone = process.env.TWILIO_PHONE_RECIPIENT;
-
-  const client = new twilio(accountSid, authToken);
-
-  let response = await client.messages.create({
-      body: message,
-      from: senderPhone,
-      to: receiverPhone
-  });
-
-  console.log(response);
-}
-
-const axios = require('axios');
-
-const logger = require('./logger')
-const { configFromPath } = require('./util');
-const httpLogger = require('./httpLogger')
-
+const app = express()
 app.use(httpLogger)
-
-const cookieParser = require('cookie-parser')
 app.use(cookieParser())
-
-const { Kafka } = require('kafkajs');
+app.use(logerrors)
+app.use(errorHandler)
 
 const cdc = new Kafka({
  clientId: 'Kafka Microservice',
@@ -59,7 +39,25 @@ async function produce() {
    ],
  })
 }
- 
+
+async function send_message(message){
+
+  let accountSid = process.env.TWILIO_ACCOUNT_SID;
+  let authToken = process.env.TWILIO_AUTH_TOKEN;
+  let senderPhone = process.env.TWILIO_PHONE_NUMBER;
+  let receiverPhone = process.env.TWILIO_PHONE_RECIPIENT;
+
+  const client = new twilio(accountSid, authToken);
+
+  let response = await client.messages.create({
+      body: message,
+      from: senderPhone,
+      to: receiverPhone
+  });
+
+  console.log(response);
+}
+
 app.get('/errorhandler', (_req, _res, next) => {
   try {
     throw new error('Wowza!')
@@ -67,9 +65,6 @@ app.get('/errorhandler', (_req, _res, next) => {
     next(error)
   }
 })
-
-app.use(logerrors)
-app.use(errorHandler)
 
 app.get("/", (req, res) => {
     logger.debug('This is the "/" route.')
@@ -80,14 +75,6 @@ app.get("/", (req, res) => {
     res.end('Welcome to Simon Microservice')
 });
 
-function log_errors (err, req, res, next) {
-  console.error(err.stack)
-  next(err)
-}
-function errorHandler (err, req, res, next) {
-  res.status(500).send('error!')
-}
-
 app.get("/twilio", (req, res) => {
     logger.debug('This is the "/twilio" route.')
     logger.info('Send SMS Message via Twilio API')
@@ -96,11 +83,8 @@ app.get("/twilio", (req, res) => {
     res.end('Send SMS Message via Twilio API')
 
 });
-
-let requestCount = 0;
  
 app.get('/quotes', async (req, res) => {
-  requestCount++;
   logger.debug('This is the "/quotes" route.')
   logger.info("Getting a Quote from programming-quotes-api.herokuapp.com")
   const result = await axios({
@@ -228,9 +212,6 @@ app.get("/simon", async (req, res) => {
     return res.status(200).send({ message: "Calling Multiple Micro-Services Correlation..." });
 });
 
-app.use(logerrors)
-app.use(errorHandler)
-
 function logerrors (err, req, res, next) {
   console.error(err.stack)
   next(err)
@@ -245,10 +226,8 @@ app.listen(parseInt(PORT, 10), () => {
  console.log(`Listening for requests on http://localhost:${PORT}`);
 });
 
-
 process.on('SIGTERM', () => {
   server.close(() => {
     console.log('Process terminated');
   });
 });
-
