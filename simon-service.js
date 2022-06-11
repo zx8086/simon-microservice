@@ -3,7 +3,7 @@
 const twilio = require('twilio')
 const dotenv = require('dotenv')
 const node_cron = require('node-cron')
-const axios = require('axios')
+const axios = require('axios').default;
 const logger = require('./logger')
 const { configFromPath } = require('./util')
 const httpLogger = require('./httpLogger')
@@ -81,6 +81,8 @@ app.get('/quotes', async (_req, res) => {
     url: 'https://programming-quotes-api.herokuapp.com/quotes/random'
   })
 
+ console.log(result);
+
   const { id, author, en: quote } = result.data;
   res.send(`${id} - "${quote}" - ${author}`);
 
@@ -92,6 +94,8 @@ app.get('/quotes', async (_req, res) => {
       headers: {'authorization': 'Bearer m92jikugtwfk55qj9mj58y8n'},
       data: [{id : `${id}`, author : `${author}`, quote : `${quote}`, url : `https://programming-quotes-api.herokuapp.com/quotes/${id}`, description : `Programming quotes from programming-quotes-api.herokuapp.com`}]
   });
+
+ console.log(resp);
 
   logger.info("Posting the Quote to Workplace Search Custom Content Database")
 
@@ -148,7 +152,7 @@ app.get("/go", async (_req, res) => {
     logger.debug('This is the "/go" route.')
     logger.info("Calling Golang Service...")
 
-    const result = await axios({
+    await axios({
       method: 'GET',
       url: 'http://192.168.0.9:4000/go'
     })
@@ -169,7 +173,7 @@ app.get("/simon", async (_req, res) => {
     logger.debug('This is the "/simon" route.')
     logger.info("Calling Multiple Micro-Services Correlation...")
 
-    const result = await axios({
+    await axios({
       method: 'GET',
       url: 'http://192.168.0.9:3001/owusu'
     })
