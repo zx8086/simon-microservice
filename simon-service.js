@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const twilio = require('twilio')
 const dotenv = require('dotenv')
@@ -14,8 +14,8 @@ dotenv.config();
 
 const PORT = process.env.PORT
 
-let express = require('express');
-let app = express();
+const express = require('express');
+const app = express();
 app.disable("x-powered-by");
 
 app.use(httpLogger)
@@ -42,14 +42,14 @@ async function produce() {
 
 async function send_message(message){
 
-  let accountSid = process.env.TWILIO_ACCOUNT_SID;
-  let authToken = process.env.TWILIO_AUTH_TOKEN;
-  let senderPhone = process.env.TWILIO_PHONE_NUMBER;
-  let receiverPhone = process.env.TWILIO_PHONE_RECIPIENT;
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const senderPhone = process.env.TWILIO_PHONE_NUMBER;
+  const receiverPhone = process.env.TWILIO_PHONE_RECIPIENT;
 
   const client = new twilio(accountSid, authToken);
 
-  let response = await client.messages.create({
+  const response = await client.messages.create({
         body: message,
         from: senderPhone,
         to: receiverPhone
