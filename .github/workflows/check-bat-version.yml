@@ -16,12 +16,12 @@ jobs:
         node-version: [12.x, 14.x, 16.x]
         architecture:
           - x64
-    name: Node ${{ matrix.node_version }} - ${{ matrix.architecture }} on ${{ matrix.os }}
+    name: Node ${{ matrix.node-version }} - ${{ matrix.architecture }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node_version }}
+          node-version: ${{ matrix.node-version }}
           architecture: ${{ matrix.architecture }}
       - name: Cache node modules
         uses: actions/cache@v3
