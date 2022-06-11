@@ -12,15 +12,12 @@ dotenv.config();
 
 async function send_message(message){
 
-    // Get the variables
     let accountSid = process.env.TWILIO_ACCOUNT_SID;
     let authToken = process.env.TWILIO_AUTH_TOKEN;
     let senderPhone = process.env.TWILIO_PHONE_NUMBER;
 
-    // Initialize the client
     const client = new twilio(accountSid, authToken);
 
-    // Send a message
     let response = await client.messages.create({
         body: message,
         from: senderPhone,
@@ -38,15 +35,11 @@ const httpLogger = require('./httpLogger')
 
 app.use(httpLogger)
 
-// load the cookie-parsing middleware
 const cookieParser = require('cookie-parser')
 app.use(cookieParser())
 
 const { Kafka } = require('kafkajs');
-// const { countAllRequests } = require("./monitoring");
-// app.use(countAllRequests());
 
-// Kafka 
 const kafka = new Kafka({
  clientId: 'Kafka Microservice',
  brokers: ['localhost:9092','localhost:9093']
@@ -55,7 +48,6 @@ const consumer = kafka.consumer({ groupId: 'pvh-group' })
 
 const TOPIC_NAME = 'testing';
 
-// POST a predefined message to a Kafka topic
 async function produce() {
  const producer = kafka.producer()
  await producer.connect()
@@ -163,9 +155,6 @@ async function run() {
   console.log('Done', res.data);
   logger.info("Posting message to Slack")
 }
-
-  // send_message('Sending a message after Quotes')
-  // logger.info('Send SMS Message via Twilio API');
 
 })
 
