@@ -50,9 +50,9 @@ async function send_message(message){
   const client = new twilio(accountSid, authToken);
 
   let response = await client.messages.create({
-      body: message,
-      from: senderPhone,
-      to: receiverPhone
+        body: message,
+        from: senderPhone,
+        to: receiverPhone
   });
 
   console.log(response);
@@ -69,13 +69,13 @@ app.get("/", function (_req, res) {
 app.get("/twilio", function (_req, res) {
     logger.debug('This is the "/twilio" route.')
     logger.info('Send SMS Message via Twilio API')
+    send_message('Hello There!')
     res.statusCode = 200
     res.setHeader('Content-Type', 'application/json')
     res.end('Send SMS Message via Twilio API')
 });
  
 app.get('/quotes', async (_req, res) => {
-  logger.debug('This is the "/quotes" route.')
   logger.info("Getting a Quote from programming-quotes-api.herokuapp.com")
   const result = await axios({
     method: 'GET',
@@ -95,16 +95,22 @@ app.get('/quotes', async (_req, res) => {
       headers: {'authorization': 'Bearer m92jikugtwfk55qj9mj58y8n'},
       data: [{id : `${id}`, author : `${author}`, quote : `${quote}`, url : `https://programming-quotes-api.herokuapp.com/quotes/${id}`, description : `Programming quotes from programming-quotes-api.herokuapp.com`}]
   })
-  .then(function (response) {
-    console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-
-  logger.info("Posting the Quote to Workplace Search Custom Content Database")
-
-run().then(() => console.log("Done"), err => console.log(err));
+    .then(function (response) {
+      logger.info('Posting the Quote to Workplace Search Custom Content Database')
+      console.log(response);
+    })
+    .catch(function (error) {
+      logger.error('Failed to post the Quote to the Workplace Search Custom Database')
+      logger.error('Application Error - ', error)
+      res.statusCode = 500
+      res.setHeader('Content-Type', 'application/json')
+      res.end('Failed to post the Quote to the Workplace Search Custom Database')
+      console.log(error);
+    })
+    .then(function () {
+      // always executed
+    logger.debug('This is the "/quotes" route.')
+      }); 
 
 async function run() {
   const kafka = new Kafka({ 
@@ -172,6 +178,7 @@ app.get("/go", async (_req, res) => {
         res.statusCode = 500
         res.setHeader('Content-Type', 'application/json')
         res.end('Failed to call Golang Service...')
+        console.log(`statusCode: ${res.status}`);
         console.log(error);
       })
       .then(function () {
@@ -191,7 +198,7 @@ app.get('/error', function (_req, res)  {
 })
 
 app.get("/simon", async (_req, res) => {
-    logger.debug('This is the "/simon" route.')
+
     logger.info("Calling Multiple Micro-Services Correlation...")
 
     await axios({
@@ -199,12 +206,25 @@ app.get("/simon", async (_req, res) => {
       url: 'http://192.168.0.9:3001/owusu'
     })
     .then(function (response) {
+      logger.info('Call Multiple Micro-Services Correlation...')
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end('Call Multiple Micro-Services Correlation...')
       console.log(response);
     })
     .catch(function (error) {
+      logger.error('Failed to call Multiple Micro-Services Correlation...')
+      logger.error('Application Error - ', error)
+      res.statusCode = 500
+      res.setHeader('Content-Type', 'application/json')
+      res.end('Failed to call Multiple Micro-Services Correlation...')
       console.log(error);
-    });
-    return res.status(200).send({ message: "Calling Multiple Micro-Services Correlation..." });
+    })
+    .then(function () {
+      // always executed
+      logger.debug('This is the "/simon" route.')
+    }); 
+
 });
 
 console.log("Server initialized");
