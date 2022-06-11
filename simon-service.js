@@ -16,6 +16,7 @@ const PORT = process.env.PORT
 
 let express = require('express');
 let app = express(); // Sensitive
+app.disable("x-powered-by");
 
 app.use(httpLogger)
 app.use(cookieParser())
