@@ -15,13 +15,14 @@ async function send_message(message){
     let accountSid = process.env.TWILIO_ACCOUNT_SID;
     let authToken = process.env.TWILIO_AUTH_TOKEN;
     let senderPhone = process.env.TWILIO_PHONE_NUMBER;
+    let receiverPhone = process.env.TWILIO_PHONE_RECIPIENT;
 
     const client = new twilio(accountSid, authToken);
 
     let response = await client.messages.create({
         body: message,
         from: senderPhone,
-        to: '+31624879662'
+        to: receiverPhone
     });
 
     console.log(response);
@@ -59,32 +60,32 @@ async function produce() {
  })
 }
  
-app.get('/errorhandler', (_req_, _res_, _next_) => {
+app.get('/errorhandler', (req, res, next) => {
   try {
-    throw new Error('Wowza!')
+    throw new error('Wowza!')
   } catch (error) {
-    _next_(error)
+    next(error)
   }
 })
 
-app.use(logErrors)
+app.use(logerrors)
 app.use(errorHandler)
 
-function logErrors (err, _req_, _res_, _next_) {
+function log_errors (err, req, res, next) {
   console.error(err.stack)
-  _next_(err)
+  next(err)
 }
-function errorHandler (err, _req_, _res_, _next_) {
-  res.status(500).send('Error!')
+function errorHandler (err, req, res, next) {
+  res.status(500).send('error!')
 }
 
-app.get("/", (_req_, _res_) => {
+app.get("/", (req, res) => {
     logger.debug('This is the "/" route.')
     logger.info('Welcome to Simon Microservice')
     return res.status(200).send({ message: "Welcome to OpenTelemetry & Kafka Enablement Demo" });
 });
 
-app.get("/twilio", (_req_, _res_) => {
+app.get("/twilio", (req, res) => {
     logger.debug('This is the "/twilio" route.')
     logger.info('Send SMS Message via Twilio API')
     send_message('Hello There!')
@@ -93,7 +94,7 @@ app.get("/twilio", (_req_, _res_) => {
 
 let requestCount = 0;
  
-app.get('/quotes', async (_req_, _res_) => {
+app.get('/quotes', async (req, res) => {
   requestCount++;
   logger.debug('This is the "/quotes" route.')
   logger.info("Getting a Quote from programming-quotes-api.herokuapp.com")
@@ -158,13 +159,13 @@ async function run() {
 
 })
 
-app.get('/health', (_req_, _res_) => {
+app.get('/health', (req, res) => {
     logger.debug('This is the "/health" route.')
     logger.info("Application is HEALTHY")
     return res.status(200).send({ message: `Application is HEALTHY` });
 });
 
-app.get("/go", async (_req_, _res_) => {
+app.get("/go", async (req, res) => {
     logger.debug('This is the "/go" route.')
     logger.info("Calling Golang Service...")
 
@@ -175,24 +176,24 @@ app.get("/go", async (_req_, _res_) => {
     return res.status(200).send({ message: "Calling Golang Service..." });
 });
 
-app.get('/error', (_req_, _res_, _next_) => {
+app.get('/error', (req, res, next) => {
   try {
-    throw new Error('FATAL !')
+    throw new error('FATAL !')
   } catch (error) {
     logger.debug('This is the "/error" route.')
     logger.error('Application is broken', error)
-    res.status(500).send('Error!')
+    res.status(500).send('error!')
   }
 })
 
-app.post("/messages", async (_req_, _res_) => {
+app.post("/messages", async (req, res) => {
     logger.debug('This is the "/messages" route.')
     logger.info(`Posted Kafka message to TOPIC - ${TOPIC_NAME}`)
     await produce();
     return res.status(200).send({ message: `Kafka Enablement - Posted Kafka message to TOPIC - ${TOPIC_NAME}` });
 });
 
-app.get("/messages", async (_req_, _res_) => {
+app.get("/messages", async (req, res) => {
     logger.debug('This is the "/messages" route.')
     logger.info(`Getting Kafka messages to TOPIC - ${TOPIC_NAME}`)
 
@@ -211,7 +212,7 @@ app.get("/messages", async (_req_, _res_) => {
       run().catch(console.error)
 });
 
-app.get("/simon", async (_req_, _res_) => {
+app.get("/simon", async (req, res) => {
     logger.debug('This is the "/simon" route.')
     logger.info("Calling Multiple Micro-Services Correlation...")
 
@@ -222,15 +223,15 @@ app.get("/simon", async (_req_, _res_) => {
     return res.status(200).send({ message: "Calling Multiple Micro-Services Correlation..." });
 });
 
-app.use(logErrors)
+app.use(logerrors)
 app.use(errorHandler)
 
-function logErrors (err, _req_, _res_, _next_) {
+function logerrors (err, req, res, next) {
   console.error(err.stack)
-  _next_(err)
+  next(err)
 }
-function errorHandler (err, _req_, _res_, _next_) {
-  res.status(500).send('Error!')
+function errorHandler (err, req, res, next) {
+  res.status(500).send('error!')
 }
 
 console.log("Server initialized");
@@ -238,3 +239,11 @@ console.log("Server initialized");
 app.listen(parseInt(PORT, 10), () => {
  console.log(`Listening for requests on http://localhost:${PORT}`);
 });
+
+
+process.on('SIGTERM', () => {
+  server.close(() => {
+    console.log('Process terminated');
+  });
+});
+

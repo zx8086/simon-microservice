@@ -499,7 +499,9 @@ function mkl_dep_install_source {
     else
         mkl_dbg "Source install of $name failed"
         mkl_check_failed "$iname" "" disable "source installer failed (see $ilog)"
-        mkl_err "$name source build failed, see $ilog for details. Last 50 lines:"
+        mkl_err "$name source build failed, see $ilog for details. First 50 and last 50 lines:"
+        head -50 "$ilog"
+        echo " .... and last 50 lines ...."
         tail -50 "$ilog"
     fi
 
@@ -606,6 +608,41 @@ function mkl_dep_install {
     return $retcode
 }
 
+
+# Apply patch to a source dependency.
+#
+# Param 1: config name (e.g. libssl)
+# Param 2: patch number (optional, else all)
+#
+# Returns 0 on success or 1 on error.
+function mkl_patch {
+    local name=$1
+    local patchnr="$2"
+
+    if [[ -z $patchnr ]]; then
+        patchnr="????"
+    fi
+
+    local patchfile=
+    local cnt=0
+    for patchfile in $(echo ${MKLOVE_DIR}/modules/patches/${name}.${patchnr}-*.patch | sort); do
+        mkl_dbg "$1: applying patch $patchfile"
+        patch -p1 < $patchfile
+        local retcode=$?
+        if [[ $retcode != 0 ]]; then
+            mkl_err "mkl_patch: $1: failed to apply patch $patchfile: see source dep build log for details"
+            return 1
+        fi
+        cnt=$(($cnt + 1))
+    done
+
+    if [[ $cnt -lt 1 ]]; then
+        mkl_err "mkl_patch: $1: no patches matchign $patchnr found"
+        return 1
+    fi
+
+    return 0
+}
 
 
 ###########################################################################
@@ -1977,7 +2014,7 @@ function mkl_module_download {
 
     tmpfile=$(mktemp _mkltmpXXXXXX)
     local out=
-    out=$(wget -nv -O "$tmpfile" "$url" 2>&1)
+    out=$(curl -fLs -o "$tmpfile" "$url" 2>&1)
 
     if [[ $? -ne 0 ]]; then
         rm -f "$tmpfile"
@@ -2349,4 +2386,73 @@ function mkl_toggle_option_lib {
     # Create checks
     eval "function _tmp_func { mkl_lib_check \"$2\" \"$3\" \"$4\" CC \"$7\"; }"
     mkl_func_push MKL_CHECKS "$MKL_MODULE" _tmp_func
+}
+
+
+
+# Downloads, verifies checksum, and extracts an archive to
+# the current directory.
+#
+# Arguments:
+#  url       Archive URL
+#  shabits  The SHA algorithm bit count used to verify the checksum. E.g., "256".
+#  checksum  Expected checksum of archive (use "" to not perform check)
+function mkl_download_archive {
+    local url="$1"
+    local shabits="$2"
+    local exp_checksum="$3"
+
+    local tmpfile=$(mktemp _mkltmpXXXXXX)
+
+    # Try both wget and curl
+    if ! wget -nv -O "$tmpfile" "$url" ; then
+        if ! curl -fLsS -o "$tmpfile" "$url" ; then
+            rm -f "$tmpfile"
+            echo -e "ERROR: Download of $url failed" 1>&2
+            return 1
+        fi
+    fi
+
+    if [[ -n $exp_checksum ]]; then
+        # Verify checksum
+
+        local checksum_tool=""
+
+        # OSX has shasum by default, on Linux it is typically in
+        # some Perl package that may or may not be installed.
+        if $(which shasum >/dev/null 2>&1); then
+            checksum_tool="shasum -b -a ${shabits}"
+        else
+            # shaXsum is available in Linux coreutils
+            checksum_tool="sha${shabits}sum"
+        fi
+
+        local checksum=$($checksum_tool "$tmpfile" | cut -d' ' -f1)
+        if [[ $? -ne 0 ]]; then
+            rm -f "$tmpfile"
+            echo "ERROR: Failed to verify checksum of $url with $checksum_tool" 1>&2
+            return 1
+        fi
+
+        if [[ $checksum != $exp_checksum ]]; then
+            rm -f "$tmpfile"
+            echo "ERROR: $url: $checksum_tool: Checksum mismatch: expected $exp_checksum, calculated $checksum" 1>&2
+            return 1
+        fi
+
+        echo "### Checksum of $url verified ($checksum_tool):"
+        echo "###  Expected:   $exp_checksum"
+        echo "###  Calculated: $checksum"
+    fi
+
+    tar xzf "$tmpfile" --strip-components 1
+    if [[ $? -ne 0 ]]; then
+        rm -f "$tmpfile"
+        echo "ERROR: $url: failed to extract archive" 1>&2
+        return 1
+    fi
+
+
+    rm -f "$tmpfile"
+    return 0
 }
