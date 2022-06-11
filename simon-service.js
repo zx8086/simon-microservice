@@ -1,6 +1,5 @@
 "use strict";
 
-// const express = require("express")
 const twilio = require('twilio')
 const dotenv = require('dotenv')
 const node_cron = require('node-cron')
@@ -15,14 +14,8 @@ dotenv.config();
 
 const PORT = process.env.PORT
 
-// const app = express()
-
 let express = require('express');
 let app = express(); // Sensitive
-
-// app.get('/', function (req, res) {
-//   res.send('hello')
-// });
 
 app.use(httpLogger)
 app.use(cookieParser())
