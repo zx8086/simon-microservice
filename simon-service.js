@@ -26,21 +26,6 @@ const kafkaInst = new Kafka({
  brokers: ['localhost:9092','localhost:9093']
 });
 
-const consumer = kafkaInst.consumer({ groupId: 'pvh-group' })
-
-const TOPIC_NAME = 'testing';
-
-async function produce() {
- const producer = kafkaInst.producer()
- await producer.connect()
- await producer.send({
-   topic: TOPIC_NAME,
-   messages: [
-     { key: 'key1', value: 'Kafka Enablement' },
-   ],
- })
-}
-
 async function send_message(message){
 
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -95,7 +80,9 @@ app.get('/quotes', async (_req, res) => {
       url: 'https://siobytes-elk.ent.eu-central-1.aws.cloud.es.io/api/ws/v1/sources/62a1cfaa91109cf4ff0e9907/documents/bulk_create',
       headers: {'authorization': 'Bearer m92jikugtwfk55qj9mj58y8n'},
       data: [{id : `${id}`, author : `${author}`, quote : `${quote}`, url : `https://programming-quotes-api.herokuapp.com/quotes/${id}`, description : `Programming quotes from programming-quotes-api.herokuapp.com`}]
-  })
+      })
+
+
     .then(function (response) {
       logger.info('Posting the Quote to Workplace Search Custom Content Database')
       console.log(response);
@@ -111,9 +98,10 @@ app.get('/quotes', async (_req, res) => {
     .then(function () {
       // always executed
     logger.debug('This is the "/quotes" route.')
+    logger.debug('Post to Workplace Search Custom Database')
       }); 
 
-  async function () {
+  async function run() {
 
   const producer = kafkaInst.producer();
   await producer.connect();
