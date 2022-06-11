@@ -13,13 +13,16 @@ const { Kafka } = require('kafkajs')
 
 dotenv.config();
 
-const PORT = process.env.PORT || "8070";
+const PORT = process.env.PORT
 
 const app = express()
 app.use(httpLogger)
 app.use(cookieParser())
+
+/*
 app.use(logerrors)
 app.use(errorHandler)
+*/
 
 const cdc = new Kafka({
  clientId: 'Kafka Microservice',
@@ -80,10 +83,9 @@ app.get("/twilio", (_req, res) => {
     res.statusCode = 200
     res.setHeader('Content-Type', 'application/json')
     res.end('Send SMS Message via Twilio API')
-
 });
  
-app.get('/quotes', async (req, res) => {
+app.get('/quotes', async (_req, res) => {
   logger.debug('This is the "/quotes" route.')
   logger.info("Getting a Quote from programming-quotes-api.herokuapp.com")
   const result = await axios({
@@ -104,7 +106,6 @@ app.get('/quotes', async (req, res) => {
   });
 
   logger.info("Posting the Quote to Workplace Search Custom Content Database")
-
 
 run().then(() => console.log("Done"), err => console.log(err));
 
@@ -136,12 +137,12 @@ async function run() {
   const slackToken = 'xoxb-1692025752528-3459045066403-wBcFPiSemZMO6mZWgc61hpGH';
   const url = 'https://slack.com/api/chat.postMessage';
   const text = `${quote} - ${author}`;
-  const res = await axios.post(url, {
+  const slackRes = await axios.post(url, {
     channel: '#random',
     text,
   }, { headers: { authorization: `Bearer ${slackToken}` } });
 
-  console.log('Done', res.data);
+  console.log('Done', slackRes.data);
   logger.info("Posting message to Slack")
 }
 
@@ -150,7 +151,9 @@ async function run() {
 app.get('/health', (_req, res) => {
     logger.debug('This is the "/health" route.')
     logger.info("Application is HEALTHY")
-    return res.status(200).send({ message: `Application is HEALTHY` });
+    res.statusCode = 200
+    res.setHeader('Content-Type', 'application/json')
+    res.end('Application is HEALTHY')
 });
 
 app.get("/go", async (_req, res) => {
@@ -164,7 +167,7 @@ app.get("/go", async (_req, res) => {
     return res.status(200).send({ message: "Calling Golang Service..." });
 });
 
-app.get('/error', (_req, res, next) => {
+app.get('/error', (_req, res) => {
   try {
     throw new error('FATAL !')
   } catch (error) {
@@ -173,32 +176,6 @@ app.get('/error', (_req, res, next) => {
     res.status(500).send('error!')
   }
 })
-
-app.post("/messages", async (req, res) => {
-    logger.debug('This is the "/messages" route.')
-    logger.info(`Posted Kafka message to TOPIC - ${TOPIC_NAME}`)
-    await produce();
-    return res.status(200).send({ message: `Kafka Enablement - Posted Kafka message to TOPIC - ${TOPIC_NAME}` });
-});
-
-app.get("/messages", async (_req, res) => {
-    logger.debug('This is the "/messages" route.')
-    logger.info(`Getting Kafka messages to TOPIC - ${TOPIC_NAME}`)
-
-    const run = async () => {
-    await consumer.connect()
-    await consumer.subscribe({ topic: 'number-topic', fromBeginning: true })
-
-    await consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-      const decodedKey = await registry.decode(message.key)
-      const decodedValue = await registry.decode(message.value)
-      console.log({ decodedKey, decodedValue })
-    },
-  })
-}
-      run().catch(console.error)
-});
 
 app.get("/simon", async (_req, res) => {
     logger.debug('This is the "/simon" route.')
@@ -211,13 +188,15 @@ app.get("/simon", async (_req, res) => {
     return res.status(200).send({ message: "Calling Multiple Micro-Services Correlation..." });
 });
 
-function logerrors (err, req, res, next) {
+/* 
+function logerrors (err, _req, _res, next) {
   console.error(err.stack)
   next(err)
 }
-function errorHandler (err, req, res, next) {
+function errorHandler (err, _req, res, next) {
   res.status(500).send('error!')
 }
+*/
 
 console.log("Server initialized");
 
