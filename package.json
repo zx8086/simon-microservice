@@ -68,6 +68,7 @@
     "winston-daily-rotate-file": "^4.6.1"
   },
   "devDependencies": {
+    "coverage-node": "^6.1.0",
     "nodemon": "^2.0.16"
   },
   "repository": {

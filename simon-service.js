@@ -15,22 +15,22 @@ dotenv.config();
 const PORT = process.env.PORT
 
 let express = require('express');
-let app = express(); // Sensitive
+let app = express();
 app.disable("x-powered-by");
 
 app.use(httpLogger)
 app.use(cookieParser())
 
-const cdc = new Kafka({
+const kafkaInst = new Kafka({
  clientId: 'Kafka Microservice',
  brokers: ['localhost:9092','localhost:9093']
 })
-const consumer = cdc.consumer({ groupId: 'pvh-group' })
+const consumer = kafkaInst.consumer({ groupId: 'pvh-group' })
 
 const TOPIC_NAME = 'testing';
 
 async function produce() {
- const producer = cdc.producer()
+ const producer = kafkaInst.producer()
  await producer.connect()
  await producer.send({
    topic: TOPIC_NAME,
@@ -89,14 +89,18 @@ app.get('/quotes', async (_req, res) => {
 
   logger.info("Display the Quote to Browser")
 
-  const resp = await axios({
+  await axios({
       method: 'POST',
       url: 'https://siobytes-elk.ent.eu-central-1.aws.cloud.es.io/api/ws/v1/sources/62a1cfaa91109cf4ff0e9907/documents/bulk_create',
       headers: {'authorization': 'Bearer m92jikugtwfk55qj9mj58y8n'},
       data: [{id : `${id}`, author : `${author}`, quote : `${quote}`, url : `https://programming-quotes-api.herokuapp.com/quotes/${id}`, description : `Programming quotes from programming-quotes-api.herokuapp.com`}]
+  })
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
   });
-
- console.log(resp);
 
   logger.info("Posting the Quote to Workplace Search Custom Content Database")
 
@@ -149,15 +153,51 @@ app.get('/health', function (_req, res) {
     res.end('Application is HEALTHY')
 });
 
+/*
 app.get("/go", async (_req, res) => {
-    logger.debug('This is the "/go" route.')
-    logger.info("Calling Golang Service...")
-
     await axios({
       method: 'GET',
       url: 'http://192.168.0.9:4000/go'
     })
-    return res.status(200).send({ message: "Calling Golang Service..." });
+    .then(function (response) {
+      return res.status(200).send({ message: "Golang Service..." })
+      console.log(response);
+    })
+    .catch(function (error) {
+      return res.status(500).send({ message: "Failed to call Golang Service..." })
+      console.log(error);
+    })
+    .then(function () {
+    logger.debug('This is the "/go" route.')
+    });
+});
+*/
+
+app.get("/go", async (_req, res) => {
+
+  await axios({
+        method: 'GET',
+        url: 'http://192.168.0.9:4000/go'
+      })
+      .then(function (response) {
+        logger.info('Golang Service...')
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'application/json')
+        res.end('Golang Service...')
+        console.log(response);
+      })
+      .catch(function (error) {
+        logger.error('Failed to call Golang Service...')
+        logger.error('Application Error - ', error)
+        res.statusCode = 500
+        res.setHeader('Content-Type', 'application/json')
+        res.end('Failed to call Golang Service...')
+        console.log(error);
+      })
+      .then(function () {
+        // always executed
+        logger.debug('This is the "/go" route.')
+      }); 
 });
 
 app.get('/error', function (_req, res)  {
@@ -165,7 +205,7 @@ app.get('/error', function (_req, res)  {
     throw new error('FATAL !')
   } catch (error) {
     logger.debug('This is the "/error" route.')
-    logger.error('Application is broken', error)
+    logger.error('Application Error -', error)
     res.status(500).send('error!')
   }
 })
@@ -178,17 +218,26 @@ app.get("/simon", async (_req, res) => {
       method: 'GET',
       url: 'http://192.168.0.9:3001/owusu'
     })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
     return res.status(200).send({ message: "Calling Multiple Micro-Services Correlation..." });
 });
 
 console.log("Server initialized");
 
 app.listen(parseInt(PORT, 10), () => {
- console.log(`Listening for requests on http://localhost:${PORT}`);
+ console.log(`Listening for requests on http://localhost:${PORT}`)
+ logger.info('Starting server.... Process initialized!');
+
 });
 
 process.on('SIGTERM', () => {
   server.close(() => {
+    logger.info('Stopping server.... Process terminated!');
     console.log('Process terminated');
   });
 });
