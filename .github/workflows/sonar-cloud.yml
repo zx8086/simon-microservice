@@ -1,10 +1,10 @@
+name: SonarCloud-Scanning
 on:
   push:
     branches:
       - master
   pull_request:
     types: [opened, synchronize, reopened]
-name: SonarCloud-Scanning
 jobs:
   sonarcloud:
     name: SonarCloud-Scanning
