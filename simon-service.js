@@ -153,26 +153,6 @@ app.get('/health', function (_req, res) {
     res.end('Application is HEALTHY')
 });
 
-/*
-app.get("/go", async (_req, res) => {
-    await axios({
-      method: 'GET',
-      url: 'http://192.168.0.9:4000/go'
-    })
-    .then(function (response) {
-      return res.status(200).send({ message: "Golang Service..." })
-      console.log(response);
-    })
-    .catch(function (error) {
-      return res.status(500).send({ message: "Failed to call Golang Service..." })
-      console.log(error);
-    })
-    .then(function () {
-    logger.debug('This is the "/go" route.')
-    });
-});
-*/
-
 app.get("/go", async (_req, res) => {
 
   await axios({
