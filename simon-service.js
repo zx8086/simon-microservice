@@ -67,7 +67,7 @@ async function produce() {
  })
 }
  
-app.get('/errorhandler', (req_, res_, next) => {
+app.get('/errorhandler', (_req_, _res_, next) => {
   try {
     throw new Error('Wowza!')
   } catch (error) {
@@ -78,21 +78,21 @@ app.get('/errorhandler', (req_, res_, next) => {
 app.use(logErrors)
 app.use(errorHandler)
 
-function logErrors (err, req_, res_, next) {
+function logErrors (err, _req_, _res_, next) {
   console.error(err.stack)
   next(err)
 }
-function errorHandler (err, req_, res_, next) {
+function errorHandler (err, _req_, _res_, next) {
   res.status(500).send('Error!')
 }
 
-app.get("/", (req_, res_) => {
+app.get("/", (_req_, _res_) => {
     logger.debug('This is the "/" route.')
     logger.info('Welcome to Simon Microservice')
     return res.status(200).send({ message: "Welcome to OpenTelemetry & Kafka Enablement Demo" });
 });
 
-app.get("/twilio", (req_, res_) => {
+app.get("/twilio", (_req_, _res_) => {
     logger.debug('This is the "/twilio" route.')
     logger.info('Send SMS Message via Twilio API')
     send_message('Hello There!')
@@ -101,7 +101,7 @@ app.get("/twilio", (req_, res_) => {
 
 let requestCount = 0;
  
-app.get('/quotes', async (req_, res_) => {
+app.get('/quotes', async (_req_, _res_) => {
   requestCount++;
   logger.debug('This is the "/quotes" route.')
   logger.info("Getting a Quote from programming-quotes-api.herokuapp.com")
@@ -169,13 +169,13 @@ async function run() {
 
 })
 
-app.get('/health', (req_, res_) => {
+app.get('/health', (_req_, _res_) => {
     logger.debug('This is the "/health" route.')
     logger.info("Application is HEALTHY")
     return res.status(200).send({ message: `Application is HEALTHY` });
 });
 
-app.get("/go", async (req_, res_) => {
+app.get("/go", async (_req_, _res_) => {
     logger.debug('This is the "/go" route.')
     logger.info("Calling Golang Service...")
 
@@ -186,7 +186,7 @@ app.get("/go", async (req_, res_) => {
     return res.status(200).send({ message: "Calling Golang Service..." });
 });
 
-app.get('/error', (req_, res_, next) => {
+app.get('/error', (_req_, _res_, next) => {
   try {
     throw new Error('FATAL !')
   } catch (error) {
@@ -196,14 +196,14 @@ app.get('/error', (req_, res_, next) => {
   }
 })
 
-app.post("/messages", async (req_, res_) => {
+app.post("/messages", async (_req_, _res_) => {
     logger.debug('This is the "/messages" route.')
     logger.info(`Posted Kafka message to TOPIC - ${TOPIC_NAME}`)
     await produce();
     return res.status(200).send({ message: `Kafka Enablement - Posted Kafka message to TOPIC - ${TOPIC_NAME}` });
 });
 
-app.get("/messages", async (req_, res_) => {
+app.get("/messages", async (_req_, _res_) => {
     logger.debug('This is the "/messages" route.')
     logger.info(`Getting Kafka messages to TOPIC - ${TOPIC_NAME}`)
 
@@ -222,7 +222,7 @@ app.get("/messages", async (req_, res_) => {
       run().catch(console.error)
 });
 
-app.get("/simon", async (req_, res_) => {
+app.get("/simon", async (_req_, _res_) => {
     logger.debug('This is the "/simon" route.')
     logger.info("Calling Multiple Micro-Services Correlation...")
 
@@ -236,11 +236,11 @@ app.get("/simon", async (req_, res_) => {
 app.use(logErrors)
 app.use(errorHandler)
 
-function logErrors (err, req_, res_, next) {
+function logErrors (err, _req_, _res_, next) {
   console.error(err.stack)
   next(err)
 }
-function errorHandler (err, req_, res_, next) {
+function errorHandler (err, _req_, _res_, next) {
   res.status(500).send('Error!')
 }
 
