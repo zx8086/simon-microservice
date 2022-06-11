@@ -24,7 +24,8 @@ app.use(cookieParser())
 const kafkaInst = new Kafka({
  clientId: 'Kafka Microservice',
  brokers: ['localhost:9092','localhost:9093']
-})
+});
+
 const consumer = kafkaInst.consumer({ groupId: 'pvh-group' })
 
 const TOPIC_NAME = 'testing';
@@ -112,13 +113,9 @@ app.get('/quotes', async (_req, res) => {
     logger.debug('This is the "/quotes" route.')
       }); 
 
-async function run() {
-  const kafka = new Kafka({ 
-    clientId: 'Simon Microservice',
-    brokers: ['localhost:9092','localhost:9093'] 
-  });
+  async function () {
 
-  const producer = kafka.producer();
+  const producer = kafkaInst.producer();
   await producer.connect();
 
   await producer.send({
@@ -149,7 +146,7 @@ async function run() {
   logger.info("Posting message to Slack")
 }
 
-})
+});
 
 app.get('/health', function (_req, res) {
     logger.debug('This is the "/health" route.')
