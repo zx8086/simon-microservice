@@ -4,6 +4,7 @@ on:
   push:
 jobs:
   example-job:
+    runs-on: ubuntu-latest
     name: Save output
     steps:
       - shell: bash
