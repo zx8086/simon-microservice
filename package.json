@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "start": "node -r ./tracing-simon.js simon-service.js",
-    "test": "echo 'no test specified' "
+    "test": "echo 'no test specified' ",
+    "linter": " npx standard --fix"
   },
   "author": {
     "name": "Simon Owusu",
@@ -69,7 +70,8 @@
   },
   "devDependencies": {
     "coverage-node": "^6.1.0",
-    "nodemon": "^2.0.16"
+    "nodemon": "^2.0.16",
+    "standard": "^17.0.0"
   },
   "repository": {
     "type": "git",
