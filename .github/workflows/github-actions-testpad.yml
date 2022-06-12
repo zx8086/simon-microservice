@@ -32,4 +32,4 @@ jobs:
       - name: Dump strategy context
         run: echo '${{ toJSON(strategy) }}'
       - name: Dump matrix context
-        run: echo '${{ toJSON(matrix) }}
+        run: echo '${{ toJSON(matrix) }}'
