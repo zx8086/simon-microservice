@@ -1,12 +1,11 @@
-name: Node.js Tests
-
-# **What it does**: Runs our tests.
-# **Why we have it**: We want our tests to pass before merging code.
-# **Who does it impact**: Docs engineering, open-source engineering contributors.
-
+name: 'Node.js Tests'
 on:
   workflow_dispatch:
   push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+    types: [opened, synchronize, reopened]
 
 # This allows a subsequently queued workflow run to interrupt previous runs
 concurrency:
@@ -23,14 +22,9 @@ jobs:
         # The same array lives in test-windows.yml, so make any updates there too.
         test-group:
           [
-            content,
-            graphql,
-            meta,
-            rendering,
-            routing,
-            unit,
-            linting,
-            translations,
+            # content,
+            # routing,
+            unit
           ]
         node-version: [16.x] # 12.x, 14.x, 16.x
     steps:
@@ -69,3 +63,44 @@ jobs:
           DIFF_FILE: get_diff_files.txt
           CHANGELOG_CACHE_FILE_PATH: tests/fixtures/changelog-feed.json
         run: npm test -- tests/${{ matrix.test-group }}/
+
+  runlint:
+    name: Codebase Linting
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Lint Code Base
+      uses: github/super-linter@v4
+      env:
+        VALIDATE_ALL_CODEBASE: false
+        DEFAULT_BRANCH: "master"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sonarcloud:
+    name: SonarCloud-Scanning
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: SonarCloud-Scanning
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  slackNotification:
+    name: Slack Notification
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+        # MSG_MINIMAL: Repo Actions URL, Actions URL,Commit
