@@ -1,4 +1,4 @@
-name: GitHub Actions Testpad
+name: 'GitHub Actions Testpad'
 on:
   workflow_dispatch:
   push:
@@ -27,4 +27,4 @@ jobs:
       - name: List files in this repository
         run: |
           ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+        - run: echo "🍏 This job's status is ${{ job.status }}."
