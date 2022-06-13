@@ -18,3 +18,12 @@
 
 [![Dependency Review](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml)
 
+
+#### To do
+
+- Github Actions
+- SonarCloud
+- Synk
+- Github Codespace
+- Code Coverage
+
