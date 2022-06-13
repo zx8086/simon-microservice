@@ -8,6 +8,14 @@ const httpLogger = require('./httpLogger')
 const cookieParser = require('cookie-parser')
 const { Kafka } = require('kafkajs')
 
+const csrf = require('csurf')
+
+var bodyParser = require('body-parser')
+
+//  setup route middlewares
+const csrfProtection = csrf({ cookie: true })
+const parseForm = bodyParser.urlencoded({ extended: false })
+
 dotenv.config()
 
 const PORT = process.env.PORT
@@ -40,12 +48,14 @@ async function sendMessage (message) {
   console.log(response)
 }
 
-app.get('/', function (_req, res) {
+app.get('/', csrfProtection, function (_req, res) {
   logger.debug('This is the "/" route.')
   logger.info('Welcome to Simon Microservice')
   res.statusCode = 200
   res.setHeader('Content-Type', 'application/json')
   res.end('Welcome to Simon Microservice')
+  // pass the csrfToken to the view
+  res.render('send', { csrfToken: req.csrfToken() })
 })
 
 app.get('/twilio', function (_req, res) {
