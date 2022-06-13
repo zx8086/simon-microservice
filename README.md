@@ -19,7 +19,6 @@
 
 [![Dependency Review](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml)
 
-
 #### To do
 
 - Github Actions
@@ -36,7 +35,6 @@
 
 ```
 It is a code block. You can create code syntaxes like JavaScript, HTML, CSS, Bash, and many more.
-
 ```
 
 #### Code Nodejs
