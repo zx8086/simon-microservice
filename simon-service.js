@@ -13,7 +13,7 @@ const { Kafka } = require('kafkajs')
 
 const csrf = require('csurf')
 
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 
 //  setup route middlewares
 const csrfProtection = csrf({ cookie: true })
