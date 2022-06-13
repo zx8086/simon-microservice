@@ -94,7 +94,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   codecoverage:
-    name: Sonarcloud Scan
+    name: Code Coverage
     runs-on: ubuntu-latest
     steps:
       - name: Set code coverage commit status 📫
