@@ -37,7 +37,6 @@ async function sendMessage (message) {
     from: senderPhone,
     to: receiverPhone
   })
-
   console.log(response)
 }
 
@@ -78,7 +77,6 @@ app.get('/quotes', async (_req, res) => {
     headers: { authorization: 'Bearer m92jikugtwfk55qj9mj58y8n' },
     data: [{ id: `${id}`, author: `${author}`, quote: `${quote}`, url: `https://programming-quotes-api.herokuapp.com/quotes/${id}`, description: 'Programming quotes from programming-quotes-api.herokuapp.com' }]
   })
-
     .then(function (response) {
       logger.info('Posting the Quote to Workplace Search Custom Content Database')
       console.log(response)
