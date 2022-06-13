@@ -71,7 +71,6 @@
     "winston-daily-rotate-file": "^4.6.1"
   },
   "devDependencies": {
-    "check-code-coverage": "^1.10.0",
     "coverage-node": "^6.1.0",
     "jest": "^28.1.1",
     "nodemon": "^2.0.16",
