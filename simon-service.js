@@ -1,11 +1,9 @@
 'use strict'
 
-const twilio = require('twilio')
+const { Twilio } = require('twilio')
 const dotenv = require('dotenv')
-const node_cron = require('node-cron')
 const axios = require('axios').default
 const logger = require('./logger')
-const { configFromPath } = require('./util')
 const httpLogger = require('./httpLogger')
 const cookieParser = require('cookie-parser')
 const { Kafka } = require('kafkajs')
@@ -26,13 +24,13 @@ const kafkaInst = new Kafka({
   brokers: ['localhost:9092', 'localhost:9093']
 })
 
-async function send_message (message) {
+async function sendMessage (message) {
   const accountSid = process.env.TWILIO_ACCOUNT_SID
   const authToken = process.env.TWILIO_AUTH_TOKEN
   const senderPhone = process.env.TWILIO_PHONE_NUMBER
   const receiverPhone = process.env.TWILIO_PHONE_RECIPIENT
 
-  const client = new twilio(accountSid, authToken)
+  const client = new Twilio(accountSid, authToken)
 
   const response = await client.messages.create({
     body: message,
@@ -54,7 +52,7 @@ app.get('/', function (_req, res) {
 app.get('/twilio', function (_req, res) {
   logger.debug('This is the "/twilio" route.')
   logger.info('Send SMS Message via Twilio API')
-  send_message('Hello There!')
+  sendMessage('Hello There!')
   res.statusCode = 200
   res.setHeader('Content-Type', 'application/json')
   res.end('Send SMS Message via Twilio API')
@@ -99,38 +97,37 @@ app.get('/quotes', async (_req, res) => {
       logger.debug('Post to Workplace Search Custom Database')
     })
 
-  async function run () {
-    const producer = kafkaInst.producer()
-    await producer.connect()
+  // async function run () {
+  const producer = kafkaInst.producer()
+  await producer.connect()
 
-    await producer.send({
-      topic: 'quotes',
-      messages: [
-        {
-          key: `${id}`,
-          value: JSON.stringify({
-            author: `${author}`,
-            quote: `${quote}`,
-            url: `https://programming-quotes-api.herokuapp.com/quotes/${id}`,
-            description: 'Programming quotes from programming-quotes-api.herokuapp.com'
-          })
-        }
-      ]
-    })
+  await producer.send({
+    topic: 'quotes',
+    messages: [
+      {
+        key: `${id}`,
+        value: JSON.stringify({
+          author: `${author}`,
+          quote: `${quote}`,
+          url: `https://programming-quotes-api.herokuapp.com/quotes/${id}`,
+          description: 'Programming quotes from programming-quotes-api.herokuapp.com'
+        })
+      }]
+  })
 
-    logger.info('Posting the Quote to Kafka Quotes Topic')
+  logger.info('Posting the Quote to Kafka Quotes Topic')
+  // };
 
-    const slackToken = 'xoxb-1692025752528-3459045066403-wBcFPiSemZMO6mZWgc61hpGH'
-    const url = 'https://slack.com/api/chat.postMessage'
-    const text = `${quote} - ${author}`
-    const slackRes = await axios.post(url, {
-      channel: '#random',
-      text
-    }, { headers: { authorization: `Bearer ${slackToken}` } })
+  const slackToken = 'xoxb-1692025752528-3459045066403-wBcFPiSemZMO6mZWgc61hpGH'
+  const url = 'https://slack.com/api/chat.postMessage'
+  const text = `${quote} - ${author}`
+  const slackRes = await axios.post(url, {
+    channel: '#random',
+    text
+  }, { headers: { authorization: `Bearer ${slackToken}` } })
 
-    console.log('Done', slackRes.data)
-    logger.info('Posting message to Slack')
-  }
+  console.log('Done', slackRes.data)
+  logger.info('Posting message to Slack')
 })
 
 app.get('/health', function (_req, res) {
@@ -168,15 +165,15 @@ app.get('/go', async (_req, res) => {
     })
 })
 
-app.get('/error', function (_req, res) {
-  try {
-    throw new error('FATAL !')
-  } catch (error) {
-    logger.debug('This is the "/error" route.')
-    logger.error('Application Error -', error)
-    res.status(500).send('error!')
-  }
-})
+// app.get('/error', function (_req, res) {
+//   try {
+//     throw new error('FATAL !')
+//   } catch (error) {
+//     logger.debug('This is the "/error" route.')
+//     logger.error('Application Error -', Error)
+//     res.status(500).send('error!')
+//   }
+// })
 
 app.get('/simon', async (_req, res) => {
   logger.info('Calling Multiple Micro-Services Correlation...')
@@ -213,9 +210,9 @@ app.listen(parseInt(PORT, 10), () => {
   logger.info('Starting server.... Process initialized!')
 })
 
-process.on('SIGTERM', () => {
-  server.close(() => {
-    logger.info('Stopping server.... Process terminated!')
-    console.log('Process terminated')
-  })
-})
+// process.on('SIGTERM', () => {
+//   server.close(() => {
+//     logger.info('Stopping server.... Process terminated!')
+//     console.log('Process terminated')
+//   })
+// })
