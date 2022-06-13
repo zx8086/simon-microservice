@@ -49,3 +49,21 @@ function print() {
 
 ~~Sharing is NOT about Caring.~~
 
+[Siobytes](http://code.siobytes.com)
+
+---
+
+**DO NOT UNDERESTIMATE THE POWER OF A PROGRAMMER.**
+
+*It is Written in Italics*
+
+:mango: :lemon: :man: :car:
+
+---
+
+[![Forking a Repo](https://res.cloudinary.com/atapas/image/upload/v1654144800/demos/Merge-Conflicts_vtk8on.png)](https://www.youtube.com/watch?v=OulZeVtZhZQ)
+
+---
+
+- [Unpopular Opinion](#unpopular-opinion)
+
