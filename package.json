@@ -6,8 +6,7 @@
   "private": true,
   "scripts": {
     "start": "node -r ./tracing-simon.js simon-service.js",
-    "test": "echo 'no test specified' ",
-    "linter": " npx standard --fix"
+    "test": "npx standard --fix"
   },
   "author": {
     "name": "Simon Owusu",
