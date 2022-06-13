@@ -24,6 +24,7 @@
 - [X] Github Actions
 - [X] SonarCloud
 - [X] Synk
+- [X] Aspecto
 - [ ] Github Codespace
 - [ ] Code Coverage
 

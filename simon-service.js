@@ -1,5 +1,8 @@
 'use strict'
 
+const instrument = require('@aspecto/opentelemetry');
+instrument({local:true, aspectoAuth: '1cbb856b-0558-4e75-876f-3aee212f65c7'});
+
 const { Twilio } = require('twilio')
 const dotenv = require('dotenv')
 const axios = require('axios').default
