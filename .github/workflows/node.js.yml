@@ -56,9 +56,6 @@ jobs:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('package*.json') }}
 
-      - name: Run linter
-        run: npm run linter
-
       - name: Run build script
         run: npm run build --if-present
 
