@@ -17,7 +17,7 @@
 
 [![Dependency Review](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml)
 
----
+--- 
 
 ### To Add
 
@@ -28,13 +28,10 @@
 - [ ] Code Coverage
 
 ---
-
 ```
 It is a code block. You can create code syntaxes like JavaScript, HTML, CSS, Bash, and many more.
 ```
-
 ---
-
 ### Code Nodejs
 
 ```js
@@ -48,7 +45,6 @@ function print() {
 [Siobytes](http://code.siobytes.com)
 
 ---
-
 **DO NOT UNDERESTIMATE THE POWER OF A PROGRAMMER.**
 
 *It is Written in Italics*
@@ -56,7 +52,4 @@ function print() {
 :mango: :lemon: :man: :car:
 
 ---
-
 [![Forking a Repo](https://res.cloudinary.com/atapas/image/upload/v1654144800/demos/Merge-Conflicts_vtk8on.png)](https://www.youtube.com/watch?v=OulZeVtZhZQ)
-
----
