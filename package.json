@@ -1,12 +1,13 @@
 {
   "name": "simon-microservice",
   "version": "1.0.0",
-  "description": "Micro-Service for Kafka Enablemeny & OpenTelemetry",
+  "description": "Micro-Service for Kafka Enablement & OpenTelemetry",
   "main": "app.js",
   "private": true,
   "scripts": {
     "start": "node -r ./tracing-simon.js simon-service.js",
-    "test": "npx standard --fix"
+    "test": "echo 'Testing....' ",
+    "linter": "standard --fix"
   },
   "author": {
     "name": "Simon Owusu",
