@@ -115,15 +115,15 @@ app.get('/quotes', async (_req, res) => {
 
   logger.info('Posting the Quote to Kafka Quotes Topic')
 
-  const slackToken = 'xoxb-1692025752528-3459045066403-wBcFPiSemZMO6mZWgc61hpGH'
-  const url = 'https://slack.com/api/chat.postMessage'
-  const text = `${quote} - ${author}`
-  const slackRes = await axios.post(url, {
-    channel: '#random',
-    text
-  }, { headers: { authorization: `Bearer ${slackToken}` } })
+  // const slackToken = 'xoxb-1692025752528-3459045066403-wBcFPiSemZMO6mZWgc61hpGH'
+  // const url = 'https://slack.com/api/chat.postMessage'
+  // const text = `${quote} - ${author}`
+  // const slackRes = await axios.post(url, {
+  //   channel: '#random',
+  //   text
+  // }, { headers: { authorization: `Bearer ${slackToken}` } })
 
-  console.log('Done', slackRes.data)
+  // console.log('Done', slackRes.data)
   logger.info('Posting message to Slack')
 })
 
