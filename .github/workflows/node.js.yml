@@ -1,5 +1,5 @@
 ---
-name: 'Nodejs Tests'
+name: 'Nodejs Workflow'
 on:
   workflow_dispatch:
   push:
@@ -65,7 +65,7 @@ jobs:
           CHANGELOG_CACHE_FILE_PATH: tests/fixtures/changelog-feed.json
         run: npm test -- tests/${{ matrix.test-group }}/
 
-  runlint:
+  linting:
     name: Codebase Linting
     runs-on: ubuntu-latest
     steps:
@@ -81,7 +81,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   sonarcloud:
-    name: SonarCloud-Scanning
+    name: Sonarcloud Scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -92,6 +92,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  codecoverage:
+    name: Sonarcloud Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set code coverage commit status 📫
+        run: npx set-gh-status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   slackNotification:
     name: Slack Notification

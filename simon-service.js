@@ -184,11 +184,13 @@ console.log('Server initialized')
 app.listen(parseInt(PORT, 10), () => {
   console.log(`Listening for requests on http://localhost:${PORT}`)
   logger.info('Starting server.... Process initialized!')
+
+
 })
 
-// process.on('SIGTERM', () => {
-//   server.close(() => {
-//     logger.info('Stopping server.... Process terminated!')
-//     console.log('Process terminated')
-//   })
-// })
+process.on('SIGTERM', () => {
+  app.close(() => {
+    logger.info('Stopping server.... Process terminated!')
+    console.log('Process terminated')
+  })
+})

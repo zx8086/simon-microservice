@@ -43,6 +43,7 @@
     "@opentelemetry/semantic-conventions": "^1.0.1",
     "@opentelemetry/tracing": "^0.16.0",
     "axios": "^0.26.1",
+    "code-coverage": "^0.0.2",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
@@ -69,6 +70,7 @@
     "winston-daily-rotate-file": "^4.6.1"
   },
   "devDependencies": {
+    "check-code-coverage": "^1.10.0",
     "coverage-node": "^6.1.0",
     "nodemon": "^2.0.16",
     "standard": "^17.0.0"
