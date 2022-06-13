@@ -1,6 +1,4 @@
-# simon-microservice
-
-## Microservice for Kafka Enablemeny & OpenTelemetry Demo
+# Simon Microservice OpenTelemetry and Kafka Enablement Demo
 
 > "Code is expensive to change, but design is cheaper to change, and requirements are even cheaper to change." - Daniel T. Barr
 
@@ -19,23 +17,24 @@
 
 [![Dependency Review](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml)
 
-#### To do
+---
 
-- Github Actions
-- SonarCloud
-- Synk
-- Github Codespace
-- Code Coverage
+#### To Add
 
-#### Review
+- [X] Github Actions
+- [X] SonarCloud
+- [X] Synk
+- [ ] Github Codespace
+- [ ] Code Coverage
 
-- [X] Code
-- [ ] Review
-- [ ] Commit
+
+---
 
 ```
 It is a code block. You can create code syntaxes like JavaScript, HTML, CSS, Bash, and many more.
 ```
+
+---
 
 #### Code Nodejs
 
@@ -62,6 +61,4 @@ function print() {
 [![Forking a Repo](https://res.cloudinary.com/atapas/image/upload/v1654144800/demos/Merge-Conflicts_vtk8on.png)](https://www.youtube.com/watch?v=OulZeVtZhZQ)
 
 ---
-
-- [Unpopular Opinion](#unpopular-opinion)
 
