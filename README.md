@@ -2,6 +2,7 @@
 
 ## Microservice for Kafka Enablemeny & OpenTelemetry Demo
 
+> "Code is expensive to change, but design is cheaper to change, and requirements are even cheaper to change." - Daniel T. Barr
 
 ### Java Style Guide 
 
@@ -37,4 +38,14 @@
 It is a code block. You can create code syntaxes like JavaScript, HTML, CSS, Bash, and many more.
 
 ```
+
+#### Code Nodejs
+
+```js
+function print() {
+ console.log('This is is a JavaScript Code Block');
+}
+```
+
+~~Sharing is NOT about Caring.~~
 
