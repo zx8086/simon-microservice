@@ -96,8 +96,6 @@ app.get('/quotes', async (_req, res) => {
       logger.debug('This is the "/quotes" route.')
       logger.debug('Post to Workplace Search Custom Database')
     })
-
-  // async function run () {
   const producer = kafkaInst.producer()
   await producer.connect()
 
@@ -116,7 +114,6 @@ app.get('/quotes', async (_req, res) => {
   })
 
   logger.info('Posting the Quote to Kafka Quotes Topic')
-  // };
 
   const slackToken = 'xoxb-1692025752528-3459045066403-wBcFPiSemZMO6mZWgc61hpGH'
   const url = 'https://slack.com/api/chat.postMessage'
@@ -164,16 +161,6 @@ app.get('/go', async (_req, res) => {
       logger.debug('This is the "/go" route.')
     })
 })
-
-// app.get('/error', function (_req, res) {
-//   try {
-//     throw new error('FATAL !')
-//   } catch (error) {
-//     logger.debug('This is the "/error" route.')
-//     logger.error('Application Error -', Error)
-//     res.status(500).send('error!')
-//   }
-// })
 
 app.get('/simon', async (_req, res) => {
   logger.info('Calling Multiple Micro-Services Correlation...')
