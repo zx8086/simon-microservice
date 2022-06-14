@@ -1,4 +1,4 @@
-# Simon Microservice OpenTelemetry and Kafka Enablement Demo
+# Simon's Microservice for OpenTelemetry & Kafka Enablement Demo
 
 > "Code is expensive to change, but design is cheaper to change, and requirements are even cheaper to change." - Daniel T. Barr
 
