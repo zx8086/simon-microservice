@@ -1,7 +1,14 @@
 'use strict'
 
-const instrument = require('@aspecto/opentelemetry');
-instrument({local:true, aspectoAuth: '1cbb856b-0558-4e75-876f-3aee212f65c7'});
+const instrument = require('@aspecto/opentelemetry')
+instrument({ local:false, aspectoAuth: '1cbb856b-0558-4e75-876f-3aee212f65c7', serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, logger: console, disableAspecto: false })
+
+// otlpCollectorEndpoint -> set Collector
+
+// const { setLogger } = Instrument({ local: true })
+
+//  // initialize your service ...
+//  setLogger(myLogger); 
 
 const { Twilio } = require('twilio')
 const dotenv = require('dotenv')
@@ -17,7 +24,7 @@ const bodyParser = require('body-parser')
 
 //  setup route middlewares
 const csrfProtection = csrf({ cookie: true })
-const parseForm = bodyParser.urlencoded({ extended: false })
+// const parseForm = bodyParser.urlencoded({ extended: false })
 
 dotenv.config()
 
@@ -58,7 +65,7 @@ app.get('/', csrfProtection, function (_req, res) {
   res.setHeader('Content-Type', 'application/json')
   res.end('Welcome to Simon Microservice')
   // pass the csrfToken to the view
-  res.render('send', { csrfToken: req.csrfToken() })
+  // res.render('send', { csrfToken: _req.csrfToken() })
 })
 
 app.get('/twilio', function (_req, res) {
@@ -197,7 +204,6 @@ console.log('Server initialized')
 app.listen(parseInt(PORT, 10), () => {
   console.log(`Listening for requests on http://localhost:${PORT}`)
   logger.info('Starting server.... Process initialized!')
-
 
 })
 
