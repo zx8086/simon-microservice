@@ -6,7 +6,7 @@ dotenv.config()
 const aspectoAuth = process.env.ASPECTO_API_KEY
 
 const logger = require('./logger')
-const { setLogger } = instrument({local:true, logger: logger, aspectoAuth: aspectoAuth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false})
+const { setLogger } = instrument({ local: true, logger, aspectoAuth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false })
 
 // initialize your service ...
 setLogger(logger)
