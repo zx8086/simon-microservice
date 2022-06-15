@@ -3,21 +3,21 @@
 const instrument = require('@aspecto/opentelemetry')
 const dotenv = require('dotenv')
 dotenv.config()
-const aspecto_Auth = process.env.ASPECTO_API_KEY
+const aspectoAuth = process.env.ASPECTO_API_KEY
 
 const logger = require('./logger')
-const { setLogger } = instrument({ local:true, logger: logger, aspectoAuth: aspecto_Auth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false })
+const { setLogger } = instrument({ local: true, logger, aspectoAuth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false })
 
 // initialize your service ...
-setLogger(logger); 
+setLogger(logger)
 
 const { Twilio } = require('twilio')
 const axios = require('axios').default
 const httpLogger = require('./httpLogger')
 const cookieParser = require('cookie-parser')
-const { MongoClient } = require("mongodb");
+// const { MongoClient } = require("mongodb");
 const csrf = require('csurf')
-const bodyParser = require('body-parser')
+// const bodyParser = require('body-parser')
 const csrfProtection = csrf({ cookie: true })
 // const parseForm = bodyParser.urlencoded({ extended: false })
 
@@ -33,8 +33,6 @@ const express = require('express')
 const app = express()
 app.disable('x-powered-by')
 
-const router = express.Router()
-
 app.use(httpLogger)
 app.use(cookieParser())
 
@@ -43,9 +41,7 @@ async function sendMessage (message) {
   const authToken = process.env.TWILIO_AUTH_TOKEN
   const senderPhone = process.env.TWILIO_PHONE_NUMBER
   const receiverPhone = process.env.TWILIO_PHONE_RECIPIENT
-
   const client = new Twilio(accountSid, authToken)
-
   const response = await client.messages.create({
     body: message,
     from: senderPhone,
@@ -139,34 +135,34 @@ app.get('/health', function (_req, res) {
   res.end('Application is HEALTHY')
 })
 
-app.get('/kafkaconsumer', async function(_req, res, next) {
+app.get('/kafkaconsumer', async function (_req, res, next) {
   const consumeMessages = async () => {
-   const consumer = kafkaInst.consumer({ groupId: 'quotes-group' });
-   await consumer.connect();
-   await consumer.subscribe({ topic: 'quotes', fromBeginning: false });
-   await consumer.run({
-     eachMessage: async ({ topic, partition, message }) => {
+    const consumer = kafkaInst.consumer({ groupId: 'quotes-group' })
+    await consumer.connect()
+    await consumer.subscribe({ topic: 'quotes', fromBeginning: false })
+    await consumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
         console.log({
-         value: message.value.toString(),
-       })
-     },
-   })
-  }  
- await consumeMessages()
-  .then(function (res) {
-    logger.info('Consume from Quotes Kafka Topic')
-    console.log(res)
-  })
-  .catch(function (error) {
-    logger.error('Failed to consume from Quotes Kafka Topic...')
-    logger.error('Application Error - ', error)
-    console.log(error)
-  })
-  .then(function () {
+          value: message.value.toString()
+        })
+      }
+    })
+  }
+  await consumeMessages()
+    .then(function (res) {
+      logger.info('Consume from Quotes Kafka Topic')
+      console.log(res)
+    })
+    .catch(function (error) {
+      logger.error('Failed to consume from Quotes Kafka Topic...')
+      logger.error('Application Error - ', error)
+      console.log(error)
+    })
+    .then(function () {
     // always executed
-    logger.debug('This is the "/kafkaconsumer" route.')
-  })
-});
+      logger.debug('This is the "/kafkaconsumer" route.')
+    })
+})
 
 app.get('/go', async (_req, res) => {
   await axios({
@@ -223,35 +219,9 @@ app.get('/simon', async (_req, res) => {
     })
 })
 
-app.get("/todo", async (_req, res) => {
-  const todos = await db.collection("todos").find({}).toArray();
-  res.send(todos);
-});
-
-app.get("/todo/:id", async (req, res) => {
-  const todo = await db
-    .collection("todos")
-    .findOne({ id: req.params.id });
-  res.send(todo);
-});
-
-const startServer = () => {
-  tracer.startSpan("startServer").end();
-  MongoClient.connect("mongodb://localhost:27018", (_err, client) => {
-    db = client.db("todo");
-db.collection("todos").insertMany([
-     { id: "1", title: "Buy groceries" },
-     { id: "2", title: "Install Aspecto" },
-     { id: "3", title: "buy my own name domain" },
-   ]);
- });
-  };
-console.log('Server initialized')
-
 app.listen(parseInt(PORT, 10), () => {
   console.log(`Listening for requests on http://localhost:${PORT}`)
   logger.info('Starting server.... Process initialized!')
-
 })
 
 process.on('SIGTERM', () => {

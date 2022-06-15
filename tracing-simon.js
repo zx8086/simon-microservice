@@ -1,18 +1,18 @@
 /* tracing-simon.js */
 'use strict'
 
-//OpenTelemetry
+// OpenTelemetry
 const opentelemetry = require('@opentelemetry/sdk-node')
 const { Resource } = require('@opentelemetry/resources')
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions')
 const { ConsoleSpanExporter, SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base')
 const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node')
 
-//Exporter
+// Exporter
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc')
 // const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
 
-//Instrumentations
+// Instrumentations
 // const { ExpressInstrumentation } = require("opentelemetry-instrumentation-express");
 // const { MongoDBInstrumentation } = require("@opentelemetry/instrumentation-mongodb");
 // const { HttpInstrumentation } = require("@opentelemetry/instrumentation-http");
