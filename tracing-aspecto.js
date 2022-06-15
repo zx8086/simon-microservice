@@ -1,7 +1,7 @@
 /* tracing-aspecto.js */
 'use strict'
 
-//OTEL
+//OpenTelemetry
 const { Resource } = require("@opentelemetry/resources");
 const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
 const { SimpleSpanProcessor } = require("@opentelemetry/sdk-trace-base");
@@ -10,18 +10,22 @@ const { trace } = require("@opentelemetry/api");
 
 //exporter
 const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
+// const { CollectorTraceExporter } = require('@opentelemetry/exporter-collector');
 
 //instrumentations
+const { getNodeAutoInstrumentations } = require("@opentelemetry/auto-instrumentations-node");
 const { ExpressInstrumentation } = require("opentelemetry-instrumentation-express");
 const { MongoDBInstrumentation } = require("@opentelemetry/instrumentation-mongodb");
 const { HttpInstrumentation } = require("@opentelemetry/instrumentation-http");
 const { registerInstrumentations } = require("@opentelemetry/instrumentation");
+const { KafkaJsInstrumentation } = require("opentelemetry-instrumentation-kafkajs");
 
 module.exports = (serviceName) => {
   const exporter = new OTLPTraceExporter({
     url: "https://collector.aspecto.io/v1/traces",
     headers: {
-    Authorization: "1cbb856b-0558-4e75-876f-3aee212f65c7",
+    Authorization: process.env.ASPECTO_API_KEY
+
     },
   });
 
@@ -36,6 +40,8 @@ module.exports = (serviceName) => {
 
   registerInstrumentations({
     instrumentations: [
+      getNodeAutoInstrumentations(),
+      new KafkaJsInstrumentation({}),
       new HttpInstrumentation(),
       new ExpressInstrumentation({
        requestHook: (span, requestInfo) => {

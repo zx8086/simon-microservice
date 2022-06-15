@@ -69,6 +69,7 @@
     "coverage-node": "^6.1.0",
     "jest": "^28.1.1",
     "nodemon": "^2.0.16",
+    "opentelemetry-instrumentation-kafkajs": "^0.28.0",
     "standard": "^17.0.0"
   },
   "repository": {

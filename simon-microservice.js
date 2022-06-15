@@ -1,36 +1,31 @@
 'use strict'
 
 const instrument = require('@aspecto/opentelemetry')
-// instrument({ local:false, logger: myLogger, aspectoAuth: '1cbb856b-0558-4e75-876f-3aee212f65c7', serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, logger: console, disableAspecto: false })
+const dotenv = require('dotenv')
+dotenv.config()
+const aspecto_Auth = process.env.ASPECTO_API_KEY
+
 const logger = require('./logger')
-const { setLogger } = instrument({ local:true, logger: logger, aspectoAuth: '1cbb856b-0558-4e75-876f-3aee212f65c7', serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, logger: console, disableAspecto: false })
+const { setLogger } = instrument({ local:true, logger: logger, aspectoAuth: aspecto_Auth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false })
 
-
-// otlpCollectorEndpoint -> set Collector
-
-// const { setLogger } = Instrument({ local: true })
+// initialize your service ...
+setLogger(logger); 
 
 const { Twilio } = require('twilio')
-const dotenv = require('dotenv')
 const axios = require('axios').default
 const httpLogger = require('./httpLogger')
 const cookieParser = require('cookie-parser')
-const { Kafka } = require('kafkajs')
 const { MongoClient } = require("mongodb");
-
-
-//  // initialize your service ...
-setLogger(logger); 
-
 const csrf = require('csurf')
-
 const bodyParser = require('body-parser')
-
-//  setup route middlewares
 const csrfProtection = csrf({ cookie: true })
 // const parseForm = bodyParser.urlencoded({ extended: false })
 
-dotenv.config()
+const { Kafka } = require('kafkajs')
+const kafkaInst = new Kafka({
+  clientId: 'clientConsumer',
+  brokers: ['localhost:9092', 'localhost:9093']
+})
 
 const PORT = process.env.PORT
 
@@ -38,13 +33,10 @@ const express = require('express')
 const app = express()
 app.disable('x-powered-by')
 
+const router = express.Router()
+
 app.use(httpLogger)
 app.use(cookieParser())
-
-const kafkaInst = new Kafka({
-  clientId: 'Kafka Microservice',
-  brokers: ['localhost:9092', 'localhost:9093']
-})
 
 async function sendMessage (message) {
   const accountSid = process.env.TWILIO_ACCOUNT_SID
@@ -134,7 +126,6 @@ app.get('/quotes', async (_req, res) => {
         })
       }]
   })
-
   logger.info('Posting the Quote to Kafka Quotes Topic')
 
   logger.info('Posting message to Slack')
@@ -147,6 +138,35 @@ app.get('/health', function (_req, res) {
   res.setHeader('Content-Type', 'application/json')
   res.end('Application is HEALTHY')
 })
+
+app.get('/kafkaconsumer', async function(_req, res, next) {
+  const consumeMessages = async () => {
+   const consumer = kafkaInst.consumer({ groupId: 'quotes-group' });
+   await consumer.connect();
+   await consumer.subscribe({ topic: 'quotes', fromBeginning: false });
+   await consumer.run({
+     eachMessage: async ({ topic, partition, message }) => {
+        console.log({
+         value: message.value.toString(),
+       })
+     },
+   })
+  }  
+ await consumeMessages()
+  .then(function (res) {
+    logger.info('Consume from Quotes Kafka Topic')
+    console.log(res)
+  })
+  .catch(function (error) {
+    logger.error('Failed to consume from Quotes Kafka Topic...')
+    logger.error('Application Error - ', error)
+    console.log(error)
+  })
+  .then(function () {
+    // always executed
+    logger.debug('This is the "/kafkaconsumer" route.')
+  })
+});
 
 app.get('/go', async (_req, res) => {
   await axios({
@@ -226,7 +246,6 @@ db.collection("todos").insertMany([
    ]);
  });
   };
-
 console.log('Server initialized')
 
 app.listen(parseInt(PORT, 10), () => {
