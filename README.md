@@ -1,9 +1,6 @@
 # Simon's Microservice for OpenTelemetry & Kafka Enablement Demo
-<<<<<<< Updated upstream
 
 **DO NOT UNDERESTIMATE THE POWER OF A PROGRAMMER.**
-=======
->>>>>>> Stashed changes
 
 > "Code is expensive to change, but design is cheaper to change, and requirements are even cheaper to change." - Daniel T. Barr
 
@@ -47,4 +44,4 @@ function print() {
 [Siobytes](http://code.siobytes.com)
 
 ---
-[![Forking a Repo](https://res.cloudinary.com/atapas/image/upload/v1654144800/demos/Merge-Conflicts_vtk8on.png)](https://www.youtube.com/watch?v=OulZeVtZhZQ)
+[![Forking a Repo](https://res.cloudinary.com/atapas/image/upload/v1654144800/demos/Merge-Conflicts_vtk8on.png)](https://www.youtube.com/watch?v=OulZeVtZhZQ)y
