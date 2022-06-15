@@ -1,23 +1,26 @@
 'use strict'
 
 const instrument = require('@aspecto/opentelemetry')
-instrument({ local:false, aspectoAuth: '1cbb856b-0558-4e75-876f-3aee212f65c7', serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, logger: console, disableAspecto: false })
+// instrument({ local:false, logger: myLogger, aspectoAuth: '1cbb856b-0558-4e75-876f-3aee212f65c7', serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, logger: console, disableAspecto: false })
+const logger = require('./logger')
+const { setLogger } = instrument({ local:true, logger: logger, aspectoAuth: '1cbb856b-0558-4e75-876f-3aee212f65c7', serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, logger: console, disableAspecto: false })
+
 
 // otlpCollectorEndpoint -> set Collector
 
 // const { setLogger } = Instrument({ local: true })
 
-//  // initialize your service ...
-//  setLogger(myLogger); 
-
 const { Twilio } = require('twilio')
 const dotenv = require('dotenv')
 const axios = require('axios').default
-const logger = require('./logger')
 const httpLogger = require('./httpLogger')
 const cookieParser = require('cookie-parser')
 const { Kafka } = require('kafkajs')
 const { MongoClient } = require("mongodb");
+
+
+//  // initialize your service ...
+setLogger(logger); 
 
 const csrf = require('csurf')
 
