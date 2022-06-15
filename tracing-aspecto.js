@@ -37,7 +37,10 @@ module.exports = (serviceName) => {
   registerInstrumentations({
     instrumentations: [
       new HttpInstrumentation(),
-      new ExpressInstrumentation(),
+      new ExpressInstrumentation({
+       requestHook: (span, requestInfo) => {
+         span.setAttribute("http.request.body", JSON.stringify(requestInfo.req.body));
+       }}),
       new MongoDBInstrumentation(),
     ],
     tracerProvider: provider,

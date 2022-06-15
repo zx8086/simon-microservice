@@ -200,7 +200,7 @@ app.get('/simon', async (_req, res) => {
     })
 })
 
-app.get("/todo", async (req, res) => {
+app.get("/todo", async (_req, res) => {
   const todos = await db.collection("todos").find({}).toArray();
   res.send(todos);
 });
@@ -214,7 +214,7 @@ app.get("/todo/:id", async (req, res) => {
 
 const startServer = () => {
   tracer.startSpan("startServer").end();
-  MongoClient.connect("mongodb://localhost:27018", (err, client) => {
+  MongoClient.connect("mongodb://localhost:27018", (_err, client) => {
     db = client.db("todo");
 db.collection("todos").insertMany([
      { id: "1", title: "Buy groceries" },
