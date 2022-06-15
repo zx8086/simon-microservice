@@ -17,15 +17,15 @@
 ---
 ### To Add
 
-- [X] Github Actions
+- [X] GitHub Actions
 - [X] SonarCloud
 - [X] Synk
 - [X] Aspecto
-- [ ] Github Codespace
+- [ ] GitHub Codespace
 - [ ] Code Coverage
 
 ---
-### Code Nodejs
+### Code Node.js
 
 ```js
 function print() {
