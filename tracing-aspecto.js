@@ -1,52 +1,50 @@
 /* tracing-aspecto.js */
 'use strict'
 
-const opentelemetry = require('@opentelemetry/sdk-node')
-const { Resource } = require('@opentelemetry/resources')
-const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions')
+//OTEL
+const { Resource } = require("@opentelemetry/resources");
+const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
+const { SimpleSpanProcessor } = require("@opentelemetry/sdk-trace-base");
+const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
+const { trace } = require("@opentelemetry/api");
 
-const { ConsoleSpanExporter, SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base')
-const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node')
+//exporter
+const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
 
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-proto')
+//instrumentations
+const { ExpressInstrumentation } = require("opentelemetry-instrumentation-express");
+const { MongoDBInstrumentation } = require("@opentelemetry/instrumentation-mongodb");
+const { HttpInstrumentation } = require("@opentelemetry/instrumentation-http");
+const { registerInstrumentations } = require("@opentelemetry/instrumentation");
 
-const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node')
+module.exports = (serviceName) => {
+  const exporter = new OTLPTraceExporter({
+    url: "https://collector.aspecto.io/v1/traces",
+    headers: {
+    Authorization: "1cbb856b-0558-4e75-876f-3aee212f65c7",
+    },
+  });
 
-const { registerInstrumentations } = require('@opentelemetry/instrumentation')
-
-
-// import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
-// import { Resource } from '@opentelemetry/resources';
-// import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
-// import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
-// import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
-// import { registerInstrumentations } from '@opentelemetry/instrumentation';
-
-// const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node')
-
-const provider = new NodeTracerProvider({
+  const provider = new NodeTracerProvider({
     resource: new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: 'simon-microservice' // service name is required
+      [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
     }),
-});
+  });
+  provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
 
-provider.register();
-provider.addSpanProcessor(
-    new SimpleSpanProcessor(
-        new OTLPTraceExporter({
-            url: 'https://otelcol.aspecto.io/v1/traces',
-            headers: {
-                // Aspecto API-Key is required
-                Authorization: process.env.ASPECTO_API_KEY
-            }
-        })
-    )
-);
+  provider.register();
 
-registerInstrumentations({
-  instrumentations: [
-    // add auto instrumentations here for packages your app uses
-    getNodeAutoInstrumentations ()
+  registerInstrumentations({
+    instrumentations: [
+      new HttpInstrumentation(),
+      new ExpressInstrumentation({
+       requestHook: (span, requestInfo) => {
+         span.setAttribute("http.request.body", JSON.stringify(requestInfo.req.body));
+       }}),
+      new MongoDBInstrumentation(),
+    ],
+    tracerProvider: provider,
+  });
 
-  ],
-});
+  return trace.getTracer(serviceName);
+};
