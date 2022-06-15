@@ -1,14 +1,10 @@
 # Simon's Microservice for OpenTelemetry & Kafka Enablement Demo
 
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
+
 **DO NOT UNDERESTIMATE THE POWER OF A PROGRAMMER.**
 
 > "Code is expensive to change, but design is cheaper to change, and requirements are even cheaper to change." - Daniel T. Barr
-
-## Java Style Guide 
-
-[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
-
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Quality
 
