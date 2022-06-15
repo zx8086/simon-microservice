@@ -212,9 +212,9 @@ app.get("/todo/:id", async (req, res) => {
   res.send(todo);
 });
 
-
 const startServer = () => {
-  MongoClient.connect("mongodb://localhost:27017", (err, client) => {
+  tracer.startSpan("startServer").end();
+  MongoClient.connect("mongodb://localhost:27018", (err, client) => {
     db = client.db("todo");
 db.collection("todos").insertMany([
      { id: "1", title: "Buy groceries" },

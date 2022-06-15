@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "start": "node -r ./tracing-simon.js simon-microservice.js",
-    "aspecto": "ASPECTO_AUTH='1cbb856b-0558-4e75-876f-3aee212f65c7' node -r @aspecto/opentelemetry/auto-instrument simon-microservice.js",
+    "aspecto": "node -r ./tracing-aspecto.js simon-microservice.js",
+    "aspecto1": "ASPECTO_AUTH='1cbb856b-0558-4e75-876f-3aee212f65c7' node -r @aspecto/opentelemetry/auto-instrument simon-microservice.js",
     "test": "echo 'Testing....' ",
     "linter": "standard --fix"
   },
