@@ -10,9 +10,10 @@
 
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=zx8086_simon-microservice&token=1e1376b0795d947a463dd39062ed2bd3b5031ea2)](https://sonarcloud.io/summary/new_code?id=zx8086_simon-microservice)
 
-
 ## Workflow Status
+
 [![Dependency Review](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml)
+
 ---
 ### To Add
 
