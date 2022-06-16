@@ -52,6 +52,5 @@ module.exports = (serviceName) => {
     ],
     tracerProvider: provider
   })
-
   return trace.getTracer(serviceName)
 }
