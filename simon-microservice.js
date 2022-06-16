@@ -6,7 +6,7 @@ dotenv.config()
 const aspectoAuth = process.env.ASPECTO_API_KEY
 
 const logger = require('./logger')
-const { setLogger } = instrument({ local: true, logger, aspectoAuth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false })
+const { setLogger } = instrument({local:true, logger: logger, aspectoAuth: aspectoAuth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false})
 
 // initialize your service ...
 setLogger(logger)
@@ -69,7 +69,7 @@ app.get('/twilio', function (_req, res) {
   res.end('Send SMS Message via Twilio API')
 })
 
-app.get('/quotes', async (_req, res) => {
+app.get('/produce', async (_req, res) => {
   logger.info('Getting a Quote from programming-quotes-api.herokuapp.com')
   const result = await axios({
     method: 'GET',
@@ -106,9 +106,9 @@ app.get('/quotes', async (_req, res) => {
       logger.debug('This is the "/quotes" route.')
       logger.debug('Post to Workplace Search Custom Database')
     })
+
   const producer = kafkaInst.producer()
   await producer.connect()
-
   await producer.send({
     topic: 'quotes',
     messages: [
@@ -122,8 +122,8 @@ app.get('/quotes', async (_req, res) => {
         })
       }]
   })
+  await producer.disconnect()
   logger.info('Posting the Quote to Kafka Quotes Topic')
-
   logger.info('Posting message to Slack')
 })
 
@@ -136,56 +136,34 @@ app.get('/health', function (_req, res) {
 })
 
 app.get('/consume', async function (_req, res) {
-  const consumer = kafkaInst.consumer({ groupId: 'quotes-group' })
 
-  const main = async () => {
-    logger.info('Subscribing to Kafka topic....')
-    await consumer.connect()
-    await consumer.subscribe({ topic: 'quotes', fromBeginning: false })
-    await consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        console.log('Received message', {
-          topic,
-          partition,
-          key: message.key.toString(),
-          value: message.value.toString()
-        })
-      }
+const main = async () => {
+const consumer = kafkaInst.consumer({ groupId: 'quotes-group' })
+await consumer.connect()
+await consumer.subscribe({ topic: 'quotes', fromBeginning: false })
+await consumer.run({
+  eachMessage: async ({ topic, partition, message }) => {
+    console.log('Received message', {
+      topic,
+      partition,
+      key: message.key.toString(),
+      value: message.value.toString()
     })
-    // await consumer.disconnect()
-    logger.info('Consuming Quotes from Kafka topic.... disconnect')
   }
-  main()
-  // .then(function (res) {
-  //   logger.info('Consumed from Quotes Kafka Topic')
-  //   console.log(res)
-  // })
-  // .catch(function (error) {
-  //   logger.error('Failed to consume from Quotes Kafka Topic...')
-  //   logger.error('Application Error - ', error)
-  //   console.log(error)
-  // })
-  // .then(function () {
-  // // always executed
-  //   logger.debug('This is the "/kafkaconsumer" route.')
-  //   logger.info('Gracefully disconnected Kafka consumer')
-  //   res.end('Consumed all Quotes in the Kafka topic')
-  // })
+})
+await consumer.disconnect()
+res.end('Consumed all Quotes in the Kafka topic')
+}
 
-  // This is the light ...
-  main().catch(async error => {
+main().catch(async error => {
     console.error(error)
     try {
-      await consumer.disconnect()
-      logger.info('Disconnect from Kafka topic....')
+      logger.debug('Console Error....')
     } catch (e) {
       console.error('Failed to gracefully disconnect consumer', e)
     }
     process.exit(1)
   })
-  res.end('Consumed Kafka topic...')
-  logger.info('Disconnect from Kafka topic....')
-  // await consumer.disconnect()
 })
 
 app.get('/go', async (_req, res) => {
