@@ -6,7 +6,7 @@ dotenv.config()
 const aspectoAuth = process.env.ASPECTO_API_KEY
 
 const logger = require('./logger')
-const { setLogger } = instrument({local:true, logger: logger, aspectoAuth: aspectoAuth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false})
+const { setLogger } = instrument({ local: true, logger, aspectoAuth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false })
 
 // initialize your service ...
 setLogger(logger)
@@ -136,33 +136,32 @@ app.get('/health', function (_req, res) {
 })
 
 app.get('/consume', async function (_req, res) {
-
-const main = async () => {
   const consumer = kafkaInst.consumer({ groupId: 'quotes-group' })
-  await consumer.connect()
-  await consumer.subscribe({ topic: 'quotes', fromBeginning: false })
-  await consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-      console.log('Received message', {
-        topic,
-        partition,
-        key: message.key.toString(),
-        value: message.value.toString()
-      })
-    }
-  })
-}
-
-main().catch(async error => {
-  console.error(error)
-  try {
-    await consumer.disconnect()
-  } catch (e) {
-    console.error('Failed to gracefully disconnect consumer', e)
+  const main = async () => {
+    await consumer.connect()
+    await consumer.subscribe({ topic: 'quotes', fromBeginning: false })
+    await consumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        console.log('Received message', {
+          topic,
+          partition,
+          key: message.key.toString(),
+          value: message.value.toString()
+        })
+      }
+    })
   }
-  process.exit(1)
-})
-res.end()
+
+  main().catch(async error => {
+    console.error(error)
+    try {
+      await consumer.disconnect()
+    } catch (e) {
+      console.error('Failed to gracefully disconnect consumer', e)
+    }
+    process.exit(1)
+  })
+  res.end()
 })
 
 app.get('/go', async (_req, res) => {
