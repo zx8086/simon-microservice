@@ -93,4 +93,4 @@ module.exports = (serviceName) => {
 [Siobytes](http://code.siobytes.com)
 
 ---
-[![Forking a Repo](https://res.cloudinary.com/atapas/image/upload/v1654144800/demos/Merge-Conflicts_vtk8on.png)](https://www.youtube.com/watch?v=OulZeVtZhZQ)
+[![Letting AI do the coding](https://img1.hotstarext.com/image/upload/f_auto,t_web_hs_2_5x/sources/r1/cms/prod/old_images/CLIP/6914/1000186914/1000186914-h)](https://youtu.be/m0b_D2JgZgY)
