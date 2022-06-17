@@ -11,6 +11,9 @@ const { setLogger } = instrument({ local: true, logger, aspectoAuth, serviceName
 // initialize your service ...
 setLogger(logger)
 
+const { IncomingWebhook } = require('@slack/webhook')
+const slack = new IncomingWebhook(process.env.SLACK_INCOMING_WEBHOOK_URL)
+
 const { Twilio } = require('twilio')
 const axios = require('axios').default
 const httpLogger = require('./httpLogger')
@@ -18,14 +21,10 @@ const cookieParser = require('cookie-parser')
 // const { MongoClient } = require("mongodb");
 const csrf = require('csurf')
 // const bodyParser = require('body-parser')
-const csrfProtection = csrf({ cookie: true })
+const csrfProtection = csrf({ cookie: false })
 // const parseForm = bodyParser.urlencoded({ extended: false })
 
-const { Kafka } = require('kafkajs')
-const kafkaInst = new Kafka({
-  clientId: 'clientConsumer',
-  brokers: ['localhost:9092', 'localhost:9093']
-})
+const kafkaInst = require('./kafka')
 
 const PORT = process.env.PORT
 
@@ -110,7 +109,7 @@ app.get('/produce', async (_req, res) => {
   const producer = kafkaInst.producer()
   await producer.connect()
   await producer.send({
-    topic: 'quotes',
+    topic: process.env.TOPIC,
     messages: [
       {
         key: `${id}`,
@@ -124,6 +123,13 @@ app.get('/produce', async (_req, res) => {
   })
   await producer.disconnect()
   logger.info('Posting the Quote to Kafka Quotes Topic')
+
+  const text = `:books: "${quote}" - ${author}`
+  await slack.send({
+    text
+  })
+
+  // console.log('Done', slack.data)
   logger.info('Posting message to Slack')
 })
 
@@ -137,9 +143,9 @@ app.get('/health', function (_req, res) {
 
 app.get('/consume', async function (_req, res) {
   const main = async () => {
-    const consumer = kafkaInst.consumer({ groupId: 'quotes-group' })
+    const consumer = kafkaInst.consumer({ groupId: process.env.GROUP_ID })
     await consumer.connect()
-    await consumer.subscribe({ topic: 'quotes', fromBeginning: false })
+    await consumer.subscribe({ topic: process.env.TOPIC, fromBeginning: false })
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
         console.log('Received message', {
