@@ -55,11 +55,11 @@ jobs:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('package*.json') }}
 
-      - name: running prettier
-        run: npm run prettier
+      # - name: running prettier
+      #   run: npm run prettier
 
-      - name: running eslint
-        run: npm run lint
+      # - name: running eslint
+      #   run: npm run lint
 
       # - name: Automatically Fix Linting
       #   run: npx standard --fix
