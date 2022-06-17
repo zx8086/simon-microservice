@@ -96,4 +96,6 @@ module.exports = (serviceName) => {
 ### Silicon Valley - Write code like a normal human being  
 *Always blue, always blue, always blue...*
 
+#### Click on video below
+
 [![Letting AI do the coding](https://img1.hotstarext.com/image/upload/f_auto,t_web_hs_2_5x/sources/r1/cms/prod/old_images/CLIP/6914/1000186914/1000186914-h)](https://youtu.be/m0b_D2JgZgY)
