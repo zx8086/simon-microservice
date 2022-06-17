@@ -73,20 +73,20 @@ jobs:
           CHANGELOG_CACHE_FILE_PATH: tests/fixtures/changelog-feed.json
         run: npm test -- tests/${{ matrix.test-group }}/
 
-  linting:
-    name: Code Linting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Lint Code Base
-        uses: github/super-linter@v4
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: "master"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # linting:
+  #   name: Code Linting
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     - name: Lint Code Base
+  #       uses: github/super-linter@v4
+  #       env:
+  #         VALIDATE_ALL_CODEBASE: false
+  #         DEFAULT_BRANCH: "master"
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   sonarcloud:
     name: Sonarcloud Scan
