@@ -6,13 +6,13 @@ dotenv.config()
 const aspectoAuth = process.env.ASPECTO_API_KEY
 
 const logger = require('./logger')
-const { setLogger } = instrument({local:true, logger: logger, aspectoAuth: aspectoAuth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false})
+const { setLogger } = instrument({ local: true, logger, aspectoAuth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false })
 
 // initialize your service ...
 setLogger(logger)
 
 const { IncomingWebhook } = require('@slack/webhook')
-const slack = new IncomingWebhook(process.env.SLACK_INCOMING_WEBHOOK_URL);
+const slack = new IncomingWebhook(process.env.SLACK_INCOMING_WEBHOOK_URL)
 
 const { Twilio } = require('twilio')
 const axios = require('axios').default
@@ -21,7 +21,7 @@ const cookieParser = require('cookie-parser')
 // const { MongoClient } = require("mongodb");
 const csrf = require('csurf')
 // const bodyParser = require('body-parser')
-const csrfProtection = csrf({ cookie: true })
+const csrfProtection = csrf({ cookie: false })
 // const parseForm = bodyParser.urlencoded({ extended: false })
 
 const kafkaInst = require('./kafka')
@@ -126,8 +126,8 @@ app.get('/produce', async (_req, res) => {
 
   const text = `:books: "${quote}" - ${author}`
   await slack.send({
-  text
-  });
+    text
+  })
 
   // console.log('Done', slack.data)
   logger.info('Posting message to Slack')
@@ -142,26 +142,25 @@ app.get('/health', function (_req, res) {
 })
 
 app.get('/consume', async function (_req, res) {
-
-const main = async () => {
-const consumer = kafkaInst.consumer({ groupId: process.env.GROUP_ID })
-await consumer.connect()
-await consumer.subscribe({ topic: process.env.TOPIC, fromBeginning: false })
-await consumer.run({
-  eachMessage: async ({ topic, partition, message }) => {
-    console.log('Received message', {
-      topic,
-      partition,
-      key: message.key.toString(),
-      value: message.value.toString()
+  const main = async () => {
+    const consumer = kafkaInst.consumer({ groupId: process.env.GROUP_ID })
+    await consumer.connect()
+    await consumer.subscribe({ topic: process.env.TOPIC, fromBeginning: false })
+    await consumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        console.log('Received message', {
+          topic,
+          partition,
+          key: message.key.toString(),
+          value: message.value.toString()
+        })
+      }
     })
+    await consumer.disconnect()
+    res.end('Consumed all Quotes in the Kafka topic')
   }
-})
-await consumer.disconnect()
-res.end('Consumed all Quotes in the Kafka topic')
-}
 
-main().catch(async error => {
+  main().catch(async error => {
     console.error(error)
     try {
       logger.debug('Console Error....')
