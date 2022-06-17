@@ -1,5 +1,5 @@
 ---
-name: 'GitHub Actions Testpad'
+name: "GitHub Actions Testpad"
 on:
   workflow_dispatch:
   push:

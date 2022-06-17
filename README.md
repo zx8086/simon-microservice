@@ -19,46 +19,58 @@
 [![Dependency Review](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml)
 
 ---
+
 ### To Add
 
-- [X] GitHub Actions
-- [X] SonarCloud
-- [X] Synk
-- [X] Aspecto
+- [x] GitHub Actions
+- [x] SonarCloud
+- [x] Synk
+- [x] Aspecto
 - [ ] GitHub Codespace
 - [ ] Code Coverage
 
 ---
+
 ### Tracing Code for Node.js (Aspecto Version)
 
 ```js
-'use strict'
+"use strict";
 
 //OpenTelemetry
 const { Resource } = require("@opentelemetry/resources");
-const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
+const {
+  SemanticResourceAttributes,
+} = require("@opentelemetry/semantic-conventions");
 const { SimpleSpanProcessor } = require("@opentelemetry/sdk-trace-base");
 const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
 const { trace } = require("@opentelemetry/api");
 
 //exporter
-const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
+const {
+  OTLPTraceExporter,
+} = require("@opentelemetry/exporter-trace-otlp-http");
 
 //instrumentations
-const { getNodeAutoInstrumentations } = require("@opentelemetry/auto-instrumentations-node");
-const { ExpressInstrumentation } = require("opentelemetry-instrumentation-express");
-const { MongoDBInstrumentation } = require("@opentelemetry/instrumentation-mongodb");
+const {
+  getNodeAutoInstrumentations,
+} = require("@opentelemetry/auto-instrumentations-node");
+const {
+  ExpressInstrumentation,
+} = require("opentelemetry-instrumentation-express");
+const {
+  MongoDBInstrumentation,
+} = require("@opentelemetry/instrumentation-mongodb");
 const { HttpInstrumentation } = require("@opentelemetry/instrumentation-http");
 const { registerInstrumentations } = require("@opentelemetry/instrumentation");
-const { KafkaJsInstrumentation } = require("opentelemetry-instrumentation-kafkajs");
-
+const {
+  KafkaJsInstrumentation,
+} = require("opentelemetry-instrumentation-kafkajs");
 
 module.exports = (serviceName) => {
   const exporter = new OTLPTraceExporter({
     url: "https://collector.aspecto.io/v1/traces",
     headers: {
-    Authorization: process.env.ASPECTO_API_KEY
-
+      Authorization: process.env.ASPECTO_API_KEY,
     },
   });
 
@@ -76,9 +88,13 @@ module.exports = (serviceName) => {
       getNodeAutoInstrumentations(),
       new KafkaJsInstrumentation({}),
       new ExpressInstrumentation({
-       requestHook: (span, requestInfo) => {
-         span.setAttribute("http.request.body", JSON.stringify(requestInfo.req.body));
-       }}),
+        requestHook: (span, requestInfo) => {
+          span.setAttribute(
+            "http.request.body",
+            JSON.stringify(requestInfo.req.body)
+          );
+        },
+      }),
       new MongoDBInstrumentation(),
     ],
     tracerProvider: provider,
@@ -93,8 +109,10 @@ module.exports = (serviceName) => {
 [Siobytes](http://code.siobytes.com)
 
 ---
-### Silicon Valley - Write code like a normal human being  
-*Always blue, always blue, always blue...*
+
+### Silicon Valley - Write code like a normal human being
+
+_Always blue, always blue, always blue..._
 
 #### Click on the video below
 

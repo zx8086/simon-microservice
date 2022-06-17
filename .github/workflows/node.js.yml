@@ -1,5 +1,5 @@
 ---
-name: 'Nodejs Workflow'
+name: "Nodejs Workflow"
 on:
   workflow_dispatch:
   push:
@@ -10,7 +10,7 @@ on:
 
 # This allows a subsequently queued workflow run to interrupt previous runs
 concurrency:
-  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  group: "${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
   cancel-in-progress: true
 
 jobs:
@@ -21,11 +21,10 @@ jobs:
       fail-fast: false
       matrix:
         # The same array lives in test-windows.yml, so make any updates there too.
-        test-group:
-          [
+        test-group: [
             # content,
             # routing,
-            unit
+            unit,
           ]
         node-version: [16.x] # 12.x, 14.x, 16.x
     steps:
@@ -39,7 +38,7 @@ jobs:
           # only for the test groups that we know need the files.
           lfs: ${{ matrix.test-group == 'content' }}
           # Enables cloning the Early Access repo later with the relevant PAT
-          persist-credentials: 'false'
+          persist-credentials: "false"
 
       - name: Setup node
         uses: actions/setup-node@v3
@@ -56,8 +55,14 @@ jobs:
           path: .next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('package*.json') }}
 
-      - name: Automatically Fix Linting
-        run: npx standard --fix
+      - name: running prettier
+        run: npm run prettier
+
+      - name: running eslint
+        run: npm run lint
+
+      # - name: Automatically Fix Linting
+      #   run: npx standard --fix
 
       - name: Run build script
         run: npm run build --if-present
@@ -97,13 +102,13 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   #codecoverage:
-    #name: Code Coverage
-    #runs-on: ubuntu-latest
-    #steps:
-      #- name: Set code coverage commit status 📫
-        #run: npx set-gh-status
-        #env:
-          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #name: Code Coverage
+  #runs-on: ubuntu-latest
+  #steps:
+  #- name: Set code coverage commit status 📫
+  #run: npx set-gh-status
+  #env:
+  #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   slackNotification:
     name: Slack Notification
