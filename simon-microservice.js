@@ -8,7 +8,6 @@ const aspectoAuth = process.env.ASPECTO_API_KEY
 const logger = require('./logger')
 const { setLogger } = instrument({ local: true, logger, aspectoAuth, serviceName: 'simon-microservice', env: 'Production', writeSystemLogs: true, exportBatchSize: 100, samplingRatio: 1.0, disableAspecto: false })
 
-// initialize your service ...
 setLogger(logger)
 
 const { IncomingWebhook } = require('@slack/webhook')
@@ -56,7 +55,7 @@ app.get('/', csrfProtection, function (_req, res) {
   res.setHeader('Content-Type', 'application/json')
   res.end('Welcome to Simon Microservice')
   // pass the csrfToken to the view
-  // res.render('send', { csrfToken: _req.csrfToken() })
+  res.render('send', { csrfToken: _req.csrfToken() })
 })
 
 app.get('/twilio', function (_req, res) {
@@ -128,8 +127,7 @@ app.get('/produce', async (_req, res) => {
   await slack.send({
     text
   })
-
-  // console.log('Done', slack.data)
+  console.log('Done', slack.data)
   logger.info('Posting message to Slack')
 })
 
