@@ -38,37 +38,38 @@ module.exports = (serviceName) => {
     }),
     plugins: {
       kafkajs: { enabled: false, path: 'opentelemetry-plugin-kafkajs' }
-    }
+    },
   });
   provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
-  provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
-
+  // provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
   provider.register();
 
   registerInstrumentations({
     instrumentations: [
-      getNodeAutoInstrumentations(),
+      // getNodeAutoInstrumentations(),
       new KafkaJsInstrumentation({}),
-      new HttpInstrumentation(),
-      new ExpressInstrumentation({
-        requestHook: (span, requestInfo) => {
-          // span.setAttribute("http.request.body",JSON.stringify(requestInfo.req.body));
-          span.setAttribute("request-headers",JSON.stringify(requestInfo.req.headers));
-        },
-      }),
+      // new HttpInstrumentation(),
+      // new ExpressInstrumentation({
+      //   requestHook: (span, requestInfo) => {
+      //     // span.setAttribute("http.request.body",JSON.stringify(requestInfo.req.body));
+      //     span.setAttribute("request-headers",JSON.stringify(requestInfo.req.headers));
+      //   },
+      // }),
       // new ConnectInstrumentation(),
-      new MongoDBInstrumentation(),
-      new ElasticsearchInstrumentation({
-        // Config example (all optional)
-        suppressInternalInstrumentation: false,
-        moduleVersionAttributeName: 'elasticsearchClient.version',
-        responseHook: (span, result) => {
-          span.setAttribute('db.response', JSON.stringify(result));
-        },
-        dbStatementSerializer: (operation, params, options) => {
-          return JSON.stringify(params);
-  }
-})
+      // new MongoDBInstrumentation(),
+      // new DnsInstrumentation(),
+      // new SocketIoInstrumentation(),
+//       new ElasticsearchInstrumentation({
+//         // Config example (all optional)
+//         suppressInternalInstrumentation: false,
+//         moduleVersionAttributeName: 'elasticsearchClient.version',
+//         responseHook: (span, result) => {
+//           span.setAttribute('db.response', JSON.stringify(result));
+//         },
+//         dbStatementSerializer: (operation, params, options) => {
+//           return JSON.stringify(params);
+//   }
+// })
     ],
     tracerProvider: provider,
   });

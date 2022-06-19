@@ -58,6 +58,26 @@ async function sendMessage(message) {
   console.log(response);
 }
 
+const consumeMessages = async () => {
+  const consumer = kafkaInst.consumer({ groupId: process.env.GROUP_ID });
+  await consumer.connect();
+  await consumer.subscribe({
+    topic: process.env.TOPIC,
+    fromBeginning: false,
+  });
+  await consumer.run({
+    eachMessage: async ({ topic, partition, message }) => {
+      console.log("Received message", {
+        topic,
+        partition,
+        key: message.key.toString(),
+        value: message.value.toString(),
+      });
+    },
+  });
+  await consumer.disconnect();
+};
+
 app.get("/", csrfProtection, function (_req, res) {
   logger.debug('This is the "/" route.');
   logger.info("Welcome to Simon Microservice");
@@ -130,25 +150,30 @@ app.get("/produce", async (_req, res) => {
       logger.debug("Post to Workplace Search Custom Database");
     });
 
-  const producer = kafkaInst.producer();
-  await producer.connect();
-  await producer.send({
-    topic: process.env.TOPIC,
-    messages: [
-      {
-        key: `${id}`,
-        value: JSON.stringify({
-          quoteId: `${id}`,
-          author: `${author}`,
-          quote: `${quote}`,
-          url: `https://programming-quotes-api.herokuapp.com/quotes/${id}`,
-          description:
-            "Programming quotes from programming-quotes-api.herokuapp.com",
-        }),
-      },
-    ],
-  });
-  await producer.disconnect();
+    const produceMessages = async () => {
+      const producer = kafkaInst.producer();
+      await producer.connect();
+      await producer.send({
+        topic: process.env.TOPIC,
+        messages: [
+          {
+            key: `${id}`,
+            value: JSON.stringify({
+              quoteId: `${id}`,
+              author: `${author}`,
+              quote: `${quote}`,
+              url: `https://programming-quotes-api.herokuapp.com/quotes/${id}`,
+              description:
+                "Programming quotes from programming-quotes-api.herokuapp.com",
+            }),
+          },
+        ],
+      });
+      await producer.disconnect();
+    }
+
+    await produceMessages();
+
   logger.info("Posting the Quote to Kafka Quotes Topic");
 
   const text = `:books: "${quote}" - ${author}`;
@@ -167,7 +192,7 @@ app.get("/health", function (_req, res) {
   res.end("Application is HEALTHY");
 });
 
-app.get("/consume", async function (_req, res) {
+app.get("/consume", async function (_req, res, next) {
   const main = async () => {
     const consumer = kafkaInst.consumer({ groupId: process.env.GROUP_ID });
     await consumer.connect();
@@ -190,14 +215,15 @@ app.get("/consume", async function (_req, res) {
   };
 
   main().catch(async (error) => {
-    console.error(error);
-    try {
-      logger.debug("Console Error....");
-    } catch (e) {
-      console.error("Failed to gracefully disconnect consumer", e);
-    }
-    process.exit(1);
-  });
+      console.error(error);
+      try {
+        logger.debug("Console Error....");
+      } catch (e) {
+        console.error("Failed to gracefully disconnect consumer", e);
+      }
+      res.end("Consumed all Kafka messages...");
+      process.exit(1);
+    });
 });
 
 app.get("/go", async (_req, res) => {
