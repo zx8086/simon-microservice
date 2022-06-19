@@ -3,17 +3,13 @@
 
 // OpenTelemetry
 const { Resource } = require("@opentelemetry/resources");
-const {
-  SemanticResourceAttributes,
-} = require("@opentelemetry/semantic-conventions");
+const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
 const { SimpleSpanProcessor } = require("@opentelemetry/sdk-trace-base");
 const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
 const { trace } = require("@opentelemetry/api");
 
 // exporter
-const {
-  OTLPTraceExporter,
-} = require("@opentelemetry/exporter-trace-otlp-http");
+const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
 // const { CollectorTraceExporter } = require('@opentelemetry/exporter-collector');
 
 // instrumentations
@@ -40,6 +36,9 @@ module.exports = (serviceName) => {
       [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
       'what-for': "Demo for Opentelemetry by Simon Owusu"
     }),
+    plugins: {
+      kafkajs: { enabled: false, path: 'opentelemetry-plugin-kafkajs' }
+    }
   });
   provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
   provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
