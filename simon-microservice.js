@@ -138,6 +138,7 @@ app.get("/produce", async (_req, res) => {
       {
         key: `${id}`,
         value: JSON.stringify({
+          quoteId: `${id}`,
           author: `${author}`,
           quote: `${quote}`,
           url: `https://programming-quotes-api.herokuapp.com/quotes/${id}`,

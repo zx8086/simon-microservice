@@ -26,8 +26,9 @@
 - [x] SonarCloud
 - [x] Synk
 - [x] Aspecto
-- [ ] GitHub Codespace
+- [ ] Confluent Cloud Span, Logs & Metrics
 - [ ] Code Coverage
+- [ ] GitHub Codespace
 
 ---
 
