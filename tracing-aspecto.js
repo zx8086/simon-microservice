@@ -8,15 +8,15 @@ const { SimpleSpanProcessor } = require("@opentelemetry/sdk-trace-base");
 const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
 const { trace } = require("@opentelemetry/api");
 
-// exporter
+// Exporter
 const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
-// const { CollectorTraceExporter } = require('@opentelemetry/exporter-collector');
 
-// instrumentations
+// Instrumentation
 const { getNodeAutoInstrumentations } = require("@opentelemetry/auto-instrumentations-node");
 const { ExpressInstrumentation } = require("opentelemetry-instrumentation-express");
 const { MongoDBInstrumentation } = require("@opentelemetry/instrumentation-mongodb");
 const { HttpInstrumentation } = require("@opentelemetry/instrumentation-http");
+const { NetInstrumentation } = require('@opentelemetry/instrumentation-net');
 const { registerInstrumentations } = require("@opentelemetry/instrumentation");
 const { KafkaJsInstrumentation } = require("opentelemetry-instrumentation-kafkajs");
 // const { ConnectInstrumentation } = require('@opentelemetry/instrumentation-connnect');
@@ -33,28 +33,28 @@ module.exports = (serviceName) => {
 
   const provider = new NodeTracerProvider({
     resource: new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]: serviceName,
-      'what-for': "Demo for Opentelemetry by Simon Owusu"
+      [SemanticResourceAttributes.SERVICE_NAME]: serviceName
     }),
-    plugins: {
-      kafkajs: { enabled: false, path: 'opentelemetry-plugin-kafkajs' }
-    },
+    // plugins: {
+    //   kafkajs: { enabled: false, path: 'opentelemetry-plugin-kafkajs' }
+    // }
   });
   provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
-  // provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
+  provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
   provider.register();
 
   registerInstrumentations({
     instrumentations: [
       // getNodeAutoInstrumentations(),
       new KafkaJsInstrumentation({}),
+      // new NetInstrumentation(),
       // new HttpInstrumentation(),
-      // new ExpressInstrumentation({
-      //   requestHook: (span, requestInfo) => {
-      //     // span.setAttribute("http.request.body",JSON.stringify(requestInfo.req.body));
-      //     span.setAttribute("request-headers",JSON.stringify(requestInfo.req.headers));
-      //   },
-      // }),
+      new ExpressInstrumentation({
+        requestHook: (span, requestInfo) => {
+          // span.setAttribute("http.request.body",JSON.stringify(requestInfo.req.body));
+          span.setAttribute("request-headers",JSON.stringify(requestInfo.req.headers));
+        },
+      }),
       // new ConnectInstrumentation(),
       // new MongoDBInstrumentation(),
       // new DnsInstrumentation(),
@@ -75,3 +75,5 @@ module.exports = (serviceName) => {
   });
   return trace.getTracer(serviceName);
 };
+
+// "Some problems are so complex that you have to be highly intelligent and well informed just to be undecided about them." - Laurence J. Peter

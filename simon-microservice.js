@@ -1,24 +1,25 @@
 "use strict";
 
-const instrument = require("@aspecto/opentelemetry");
 const dotenv = require("dotenv");
 dotenv.config();
-const aspectoAuth = process.env.ASPECTO_API_KEY;
+
+// const instrument = require("@aspecto/opentelemetry");
+// const aspectoAuth = process.env.ASPECTO_API_KEY;
 
 const logger = require("./logger");
-const { setLogger } = instrument({
-  local: true,
-  logger,
-  aspectoAuth,
-  serviceName: "simon-microservice",
-  env: "Production",
-  writeSystemLogs: true,
-  exportBatchSize: 100,
-  samplingRatio: 1.0,
-  disableAspecto: false,
-});
+// const { setLogger } = instrument({
+//   local: true,
+//   logger,
+//   aspectoAuth,
+//   serviceName: "simon-microservice",
+//   env: "Production",
+//   writeSystemLogs: true,
+//   // exportBatchSize: 100,
+//   samplingRatio: 1.0,
+//   disableAspecto: false,
+// });
 
-setLogger(logger);
+// setLogger(logger);
 
 const { IncomingWebhook } = require("@slack/webhook");
 const slack = new IncomingWebhook(process.env.SLACK_INCOMING_WEBHOOK_URL);
@@ -27,10 +28,9 @@ const { Twilio } = require("twilio");
 const axios = require("axios").default;
 const httpLogger = require("./httpLogger");
 const cookieParser = require("cookie-parser");
-// const { MongoClient } = require("mongodb");
 const csrf = require("csurf");
-// const bodyParser = require('body-parser')
 const csrfProtection = csrf({ cookie: false });
+// const bodyParser = require('body-parser')
 // const parseForm = bodyParser.urlencoded({ extended: false })
 
 const kafkaInst = require("./kafka");
@@ -58,25 +58,22 @@ async function sendMessage(message) {
   console.log(response);
 }
 
-const consumeMessages = async () => {
-  const consumer = kafkaInst.consumer({ groupId: process.env.GROUP_ID });
-  await consumer.connect();
-  await consumer.subscribe({
-    topic: process.env.TOPIC,
-    fromBeginning: false,
-  });
-  await consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-      console.log("Received message", {
-        topic,
-        partition,
-        key: message.key.toString(),
-        value: message.value.toString(),
-      });
-    },
-  });
-  await consumer.disconnect();
-};
+  const consumeMessages = async () => {
+    const consumer = kafkaInst.consumer({ groupId: process.env.GROUP_ID })
+    await consumer.connect();
+    await consumer.subscribe({
+      topic: process.env.TOPIC,
+      fromBeginning: true,
+    });    
+    await consumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        console.log({
+          value: message.value.toString(),
+        })
+      },
+    });
+    await consumer.disconnect();
+   }
 
 app.get("/", csrfProtection, function (_req, res) {
   logger.debug('This is the "/" route.');
@@ -171,7 +168,6 @@ app.get("/produce", async (_req, res) => {
       });
       await producer.disconnect();
     }
-
     await produceMessages();
 
   logger.info("Posting the Quote to Kafka Quotes Topic");
@@ -192,38 +188,18 @@ app.get("/health", function (_req, res) {
   res.end("Application is HEALTHY");
 });
 
-app.get("/consume", async function (_req, res, next) {
-  const main = async () => {
-    const consumer = kafkaInst.consumer({ groupId: process.env.GROUP_ID });
-    await consumer.connect();
-    await consumer.subscribe({
-      topic: process.env.TOPIC,
-      fromBeginning: false,
-    });
-    await consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        console.log("Received message", {
-          topic,
-          partition,
-          key: message.key.toString(),
-          value: message.value.toString(),
-        });
-      },
-    });
-    await consumer.disconnect();
-    res.end("Consumed all Quotes in the Kafka topic");
-  };
-
-  main().catch(async (error) => {
-      console.error(error);
-      try {
-        logger.debug("Console Error....");
-      } catch (e) {
-        console.error("Failed to gracefully disconnect consumer", e);
-      }
-      res.end("Consumed all Kafka messages...");
-      process.exit(1);
-    });
+app.get("/consume", async function (_req, res) {
+  consumeMessages(message).catch(async (error) => {
+    console.error(error);
+    try {
+      logger.debug("Console Error....");
+    } catch (e) {
+      console.error("Failed to gracefully disconnect consumer", e);
+    }
+    res.end("Consumed all Kafka messages...");
+    process.exit(1);
+  });
+  res.end("Consumed all Quotes in the Kafka topic");
 });
 
 app.get("/go", async (_req, res) => {
@@ -292,3 +268,5 @@ process.on("SIGTERM", () => {
     console.log("Process terminated");
   });
 });
+
+// "Beware of bugs in the above code; I have only proved it correct, not tried it." - Donald Knuth

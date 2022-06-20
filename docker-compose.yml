@@ -1,0 +1,38 @@
+version: "3"
+services:
+# Jaeger
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14250:14250"
+
+# Zipkin
+  zipkin:
+      container_name: zipkin
+      image: openzipkin/zipkin:latest
+      ports:
+          - "9411:9411"
+          - "9410:9410"
+
+# Prometheus
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+# Collector
+    # otel-collector:
+    #     image: otel/opentelemetry-collector:latest
+    #     container_name: collector
+    #     command: ["--config=/etc/otel-config.yml", "--log-level=DEBUG", "${OTELCOL_ARGS}"]
+    #     volumes:
+    #         - ./otel-config.yml:/etc/otel-config.yml
+    #     ports:
+    #         - "4317:4317" # grpc
+    #         - "55678:55678"
+    #         - "55679:55679
