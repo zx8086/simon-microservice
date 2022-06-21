@@ -257,6 +257,12 @@ app.get("/simon", async (_req, res) => {
     });
 });
 
+app.use(function(_req, res) {
+  logger.debug('This is for erroneous route.')
+  logger.info("Sorry, that route doesn't exist. Have a nice day :)")
+  res.status(404).send("Sorry, that route doesn't exist. Have a nice day :)");
+});
+
 app.listen(parseInt(PORT, 10), () => {
   console.log(`Listening for requests on http://localhost:${PORT}`);
   logger.info("Starting server.... Process initialized!");

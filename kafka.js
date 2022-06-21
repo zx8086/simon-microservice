@@ -9,8 +9,8 @@ const ssl = !!sasl;
 const kafka = new Kafka({
   clientId: "nodejs-kafka-client",
   brokers: [process.env.KAFKA_BOOTSTRAP_SERVER],
-  ssl,
-  sasl,
+  // ssl,
+  // sasl,
 });
 
 module.exports = kafka;

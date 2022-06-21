@@ -1,5 +1,7 @@
 /* tracing-app.js */
 'use strict';
+const dotenv = require("dotenv");
+dotenv.config();
 
 const opentelemetry = require("@opentelemetry/sdk-node");
 const { LogLevel } = require("@opentelemetry/core");
@@ -25,10 +27,18 @@ const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 // diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 const sdk = new opentelemetry.NodeSDK({
-  // traceExporter: new opentelemetry.tracing.ConsoleSpanExporter(),
+  traceExporter: new opentelemetry.tracing.ConsoleSpanExporter(),
   instrumentations: 
     [
       getNodeAutoInstrumentations(),
+      new ExpressInstrumentation({
+        requestHook: (span, requestInfo) => {
+          span.setAttribute(
+            "http.request.body",
+            JSON.stringify(requestInfo.req.body)
+          );
+        },
+      }),
       // new RouterInstrumentation(),
       // new SocketIoInstrumentation(),
       new KafkaJsInstrumentation() 
@@ -37,8 +47,8 @@ const sdk = new opentelemetry.NodeSDK({
 
 const provider = new NodeTracerProvider({
   resource: new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: "simon-microservice",
-        [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: "Production"
+    [SemanticResourceAttributes.SERVICE_NAME]: process.env.SERVICE_NAME,
+    [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.DEPLOYMENT_ENVIRONMENT
     }),
 });
 
@@ -49,8 +59,8 @@ const metricExporter = new OTLPMetricExporter({});
 
 const meterProvider = new MeterProvider({
   resource: new Resource({
-        [SemanticResourceAttributes.SERVICE_NAME]: "simon-metrics-service",
-        [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: "Production",
+    [SemanticResourceAttributes.SERVICE_NAME]: process.env.SERVICE_NAME,
+    [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.DEPLOYMENT_ENVIRONMENT
   }),
 });
 
