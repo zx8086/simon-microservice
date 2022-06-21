@@ -7,6 +7,7 @@ dotenv.config();
 // const aspectoAuth = process.env.ASPECTO_API_KEY;
 
 const logger = require("./logger");
+
 // const { setLogger } = instrument({
 //   local: true,
 //   logger,
@@ -57,7 +58,6 @@ async function sendMessage(message) {
   });
   console.log(response);
 }
-
   const consumeMessages = async () => {
     const consumer = kafkaInst.consumer({ groupId: process.env.GROUP_ID })
     await consumer.connect();
@@ -72,7 +72,7 @@ async function sendMessage(message) {
         })
       },
     });
-    await consumer.disconnect();
+    // await consumer.disconnect();
    }
 
 app.get("/", csrfProtection, function (_req, res) {
@@ -147,28 +147,28 @@ app.get("/produce", async (_req, res) => {
       logger.debug("Post to Workplace Search Custom Database");
     });
 
-    const produceMessages = async () => {
-      const producer = kafkaInst.producer();
-      await producer.connect();
-      await producer.send({
-        topic: process.env.TOPIC,
-        messages: [
-          {
-            key: `${id}`,
-            value: JSON.stringify({
-              quoteId: `${id}`,
-              author: `${author}`,
-              quote: `${quote}`,
-              url: `https://programming-quotes-api.herokuapp.com/quotes/${id}`,
-              description:
-                "Programming quotes from programming-quotes-api.herokuapp.com",
-            }),
-          },
-        ],
-      });
-      await producer.disconnect();
-    }
-    await produceMessages();
+  const produceMessages = async () => {
+    const producer = kafkaInst.producer();
+    await producer.connect();
+    await producer.send({
+      topic: process.env.TOPIC,
+      messages: [
+        {
+          key: `${id}`,
+          value: JSON.stringify({
+            quoteId: `${id}`,
+            author: `${author}`,
+            quote: `${quote}`,
+            url: `https://programming-quotes-api.herokuapp.com/quotes/${id}`,
+            description:
+              "Programming quotes from programming-quotes-api.herokuapp.com",
+          }),
+        },
+      ],
+    });
+    await producer.disconnect();
+  }
+  await produceMessages()
 
   logger.info("Posting the Quote to Kafka Quotes Topic");
 
