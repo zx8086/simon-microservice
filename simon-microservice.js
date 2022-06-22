@@ -64,27 +64,13 @@ const sendMessageToSlack = async (text) => {
 });
 }
 
-app.get("/", csrfProtection, function (_req, res) {
+app.get("/", function (_req, res) {
   logger.debug('This is the "/" route.');
   logger.info("Welcome to Simon Microservice");
   res.statusCode = 200;
   res.setHeader("Content-Type", "application/json");
   res.end("Welcome to Simon Microservice");
-  // pass the csrfToken to the view
-  res.render("send", { csrfToken: _req.csrfToken() })
-
-  .catch(async (error) => {
-    console.error(error);
-    try {
-      logger.debug("Console Error....");
-    } catch (e) {
-      console.error("Failed to gracefully disconnect consumer", e);
-      logger.error("Application Error - ", error);
-    }
-    res.end("Consumed all Kafka messages...");
-    process.exit(1);
-  });
-})
+});
 
 app.get("/twilio", function (_req, res) {
   logger.debug('This is the "/twilio" route.');
