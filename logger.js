@@ -11,7 +11,7 @@ const options = {
     maxFiles: 5,
   },
   console: {
-    level: "error",
+    level: "debug",
     levels: winston.config.npm.levels,
     handleExceptions: true,
     format: winston.format.cli(),
