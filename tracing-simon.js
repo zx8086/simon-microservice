@@ -22,9 +22,10 @@ const { SocketIoInstrumentation } = require('opentelemetry-instrumentation-socke
 const { ExpressInstrumentation } = require("opentelemetry-instrumentation-express");
 const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 
-// const { diag, DiagConsoleLogger, DiagLogLevel } = require('@opentelemetry/api');
-// // For troubleshooting, set the log level to DiagLogLevel.DEBUG
-// diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+const { diag, DiagConsoleLogger, DiagLogLevel } = require('@opentelemetry/api');
+// For troubleshooting, set the log level to DiagLogLevel.DEBUG
+
+diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 const sdk = new opentelemetry.NodeSDK({
   traceExporter: new opentelemetry.tracing.ConsoleSpanExporter(),
@@ -67,7 +68,17 @@ const meterProvider = new MeterProvider({
 // Configure span processor to send spans to the exporter
 provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
 provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
-provider.register();
+provider.addSpanProcessor(new SimpleSpanProcessor(new PeriodicExportingMetricReader(meterProvider, {    
+  interval: 1000,
+  exporter: metricExporter,
+  meterProvider: meterProvider,
+  resource: new Resource({
+    [SemanticResourceAttributes.SERVICE_NAME]: process.env.SERVICE_NAME,
+    [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.DEPLOYMENT_ENVIRONMENT
+  }),
+})));
+
+// provider.register();
 
 sdk.start()
 .then(() => console.log('Tracing initialized'))
@@ -80,3 +91,4 @@ sdk.start()
     .catch((error) => console.log('Error terminating tracing', error))
     .finally(() => process.exit(0));
     });
+

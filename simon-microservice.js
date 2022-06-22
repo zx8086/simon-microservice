@@ -3,24 +3,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
-// const instrument = require("@aspecto/opentelemetry");
-// const aspectoAuth = process.env.ASPECTO_API_KEY;
-
 const logger = require("./logger");
-
-// const { setLogger } = instrument({
-//   local: true,
-//   logger,
-//   aspectoAuth,
-//   serviceName: "simon-microservice",
-//   env: "Production",
-//   writeSystemLogs: true,
-//   // exportBatchSize: 100,
-//   samplingRatio: 1.0,
-//   disableAspecto: false,
-// });
-
-// setLogger(logger);
 
 const { IncomingWebhook } = require("@slack/webhook");
 const slack = new IncomingWebhook(process.env.SLACK_INCOMING_WEBHOOK_URL);
@@ -45,7 +28,7 @@ app.disable("x-powered-by");
 app.use(httpLogger);
 app.use(cookieParser());
 
-async function sendMessage(message) {
+async function sendTwilioMessage(message) {
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
   const senderPhone = process.env.TWILIO_PHONE_NUMBER;
@@ -58,28 +41,28 @@ async function sendMessage(message) {
   });
   console.log(response);
 }
-  const consumeMessages = async () => {
-    const consumer = kafkaInst.consumer({ groupId: process.env.GROUP_ID })
-    await consumer.connect();
-    await consumer.subscribe({
-      topic: process.env.TOPIC,
-      fromBeginning: true,
-    });    
-    await consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        console.log({
-          value: message.value.toString(),
-        })
-      },
-    });
-  }
+
+const consumeMessages = async () => {
+  const consumer = kafkaInst.consumer({ groupId: process.env.GROUP_ID })
+  await consumer.connect();
+  await consumer.subscribe({
+    topic: process.env.TOPIC,
+    fromBeginning: true,
+  });    
+  await consumer.run({
+    eachMessage: async ({ topic, partition, message }) => {
+      console.log({
+        value: message.value.toString(),
+      })
+    },
+  });
+}
 
 const sendMessageToSlack = async (text) => {  
   slack.send({
   text,
 });
 }
-
 
 app.get("/", csrfProtection, function (_req, res) {
   logger.debug('This is the "/" route.');
@@ -89,13 +72,13 @@ app.get("/", csrfProtection, function (_req, res) {
   res.end("Welcome to Simon Microservice");
   // pass the csrfToken to the view
   res.render("send", { csrfToken: _req.csrfToken() })
+
   .catch(async (error) => {
     console.error(error);
     try {
       logger.debug("Console Error....");
     } catch (e) {
       console.error("Failed to gracefully disconnect consumer", e);
-      logger.error("Failed to gracefully disconnect consumer", e);
       logger.error("Application Error - ", error);
     }
     res.end("Consumed all Kafka messages...");
@@ -106,7 +89,7 @@ app.get("/", csrfProtection, function (_req, res) {
 app.get("/twilio", function (_req, res) {
   logger.debug('This is the "/twilio" route.');
   logger.info("Send SMS Message via Twilio API");
-  sendMessage("Hello There!");
+  sendTwilioMessage("Hello There!");
   res.statusCode = 200;
   res.setHeader("Content-Type", "application/json");
   res.end("Send SMS Message via Twilio API");
@@ -199,6 +182,8 @@ app.get("/produce", async (_req, res) => {
 app.get("/health", function (_req, res) {
   logger.debug('This is the "/health" route.');
   logger.info("Application is HEALTHY");
+  // let fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+  // console.log(fullUrl);
   res.statusCode = 200;
   res.setHeader("Content-Type", "application/json");
   res.end("Application is HEALTHY");
@@ -275,7 +260,7 @@ app.get("/simon", async (_req, res) => {
 
 app.use(function(_req, res) {
   logger.debug('This is for erroneous route.')
-  logger.info("Sorry, that route doesn't exist. Have a nice day :)")
+  logger.error("Route doesn't exist")
   res.status(404).send("Sorry, that route doesn't exist. Have a nice day :)");
 });
 
