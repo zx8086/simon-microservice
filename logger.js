@@ -20,9 +20,8 @@ const options = {
 const format = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
   winston.format.printf(
-    (info) =>
-      `${info.timestamp} ${info.level} [${info.message}] trace.id=${info.trace_id} span.id=${info.span_id} transaction.id=${info.transaction_id}`
-  )
+    (info) => `${info.timestamp} ${info.level} [${info.message}] trace.id=${info.trace_id} span.id=${info.span_id} transaction.id=${info.transaction_id}`
+    )
 );
 
 const logger = winston.createLogger({

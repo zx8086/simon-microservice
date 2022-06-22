@@ -72,8 +72,14 @@ async function sendMessage(message) {
         })
       },
     });
-    // await consumer.disconnect();
-   }
+  }
+
+const sendMessageToSlack = async (text) => {  
+  slack.send({
+  text,
+});
+}
+
 
 app.get("/", csrfProtection, function (_req, res) {
   logger.debug('This is the "/" route.');
@@ -82,8 +88,20 @@ app.get("/", csrfProtection, function (_req, res) {
   res.setHeader("Content-Type", "application/json");
   res.end("Welcome to Simon Microservice");
   // pass the csrfToken to the view
-  res.render("send", { csrfToken: _req.csrfToken() });
-});
+  res.render("send", { csrfToken: _req.csrfToken() })
+  .catch(async (error) => {
+    console.error(error);
+    try {
+      logger.debug("Console Error....");
+    } catch (e) {
+      console.error("Failed to gracefully disconnect consumer", e);
+      logger.error("Failed to gracefully disconnect consumer", e);
+      logger.error("Application Error - ", error);
+    }
+    res.end("Consumed all Kafka messages...");
+    process.exit(1);
+  });
+})
 
 app.get("/twilio", function (_req, res) {
   logger.debug('This is the "/twilio" route.');
@@ -108,44 +126,44 @@ app.get("/produce", async (_req, res) => {
 
   logger.info("Display the Quote to Browser");
 
-  await axios({
-    method: "POST",
-    url: "https://siobytes-elk.ent.eu-central-1.aws.cloud.es.io/api/ws/v1/sources/62a1cfaa91109cf4ff0e9907/documents/bulk_create",
-    headers: { authorization: "Bearer m92jikugtwfk55qj9mj58y8n" },
-    data: [
-      {
-        id: `${id}`,
-        author: `${author}`,
-        quote: `${quote}`,
-        url: `https://programming-quotes-api.herokuapp.com/quotes/${id}`,
-        description:
-          "Programming quotes from programming-quotes-api.herokuapp.com",
-      },
-    ],
-  })
-    .then(function (response) {
-      logger.info(
-        "Posting the Quote to Workplace Search Custom Content Database"
-      );
-      console.log(response);
-    })
-    .catch(function (error) {
-      logger.error(
-        "Failed to post the Quote to the Workplace Search Custom Database"
-      );
-      logger.error("Application Error - ", error);
-      res.statusCode = 500;
-      res.setHeader("Content-Type", "application/json");
-      res.end(
-        "Failed to post the Quote to the Workplace Search Custom Database"
-      );
-      console.log(error);
-    })
-    .then(function () {
-      // always executed
-      logger.debug('This is the "/quotes" route.');
-      logger.debug("Post to Workplace Search Custom Database");
-    });
+  // await axios({
+  //   method: "POST",
+  //   url: "https://siobytes-elk.ent.eu-central-1.aws.cloud.es.io/api/ws/v1/sources/62a1cfaa91109cf4ff0e9907/documents/bulk_create",
+  //   headers: { authorization: "Bearer m92jikugtwfk55qj9mj58y8n" },
+  //   data: [
+  //     {
+  //       id: `${id}`,
+  //       author: `${author}`,
+  //       quote: `${quote}`,
+  //       url: `https://programming-quotes-api.herokuapp.com/quotes/${id}`,
+  //       description:
+  //         "Programming quotes from programming-quotes-api.herokuapp.com",
+  //     },
+  //   ],
+  // })
+  //   .then(function (response) {
+  //     logger.info(
+  //       "Posting the Quote to Workplace Search Custom Content Database"
+  //     );
+  //     console.log(response);
+  //   })
+  //   .catch(function (error) {
+  //     logger.error(
+  //       "Failed to post the Quote to the Workplace Search Custom Database"
+  //     );
+  //     logger.error("Application Error - ", error);
+  //     res.statusCode = 500;
+  //     res.setHeader("Content-Type", "application/json");
+  //     res.end(
+  //       "Failed to post the Quote to the Workplace Search Custom Database"
+  //     );
+  //     console.log(error);
+  //   })
+  //   .then(function () {
+  //     // always executed
+  //     logger.debug('This is the "/quotes" route.');
+  //     logger.debug("Post to Workplace Search Custom Database");
+  //   });
 
   const produceMessages = async () => {
     const producer = kafkaInst.producer();
@@ -166,18 +184,16 @@ app.get("/produce", async (_req, res) => {
         },
       ],
     });
+    logger.info("Produced Kafka Message")
     await producer.disconnect();
   }
   await produceMessages()
-
   logger.info("Posting the Quote to Kafka Quotes Topic");
 
   const text = `:books: "${quote}" - ${author}`;
-  await slack.send({
-    text,
-  });
+  await sendMessageToSlack(text);
+  logger.info("Posting the Quote to Slack");
   console.log("Done", slack.data);
-  logger.info("Posting message to Slack");
 });
 
 app.get("/health", function (_req, res) {
