@@ -19,8 +19,8 @@ const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc')
 // const { OTLPTraceSpanExporter } = require('@opentelemetry/exporter-trace-otlp-http');
 
 const { getNodeAutoInstrumentations } = require("@opentelemetry/auto-instrumentations-node");
-// const { ExpressInstrumentation } = require("opentelemetry-instrumentation-express");
-// const { KafkaJsInstrumentation } = require('opentelemetry-instrumentation-kafkajs');
+const { ExpressInstrumentation } = require("opentelemetry-instrumentation-express");
+const { KafkaJsInstrumentation } = require('opentelemetry-instrumentation-kafkajs');
 // const { RouterInstrumentation } = require('@opentelemetry/instrumentation-router');
 // const { SocketIoInstrumentation } = require('opentelemetry-instrumentation-socket.io');
 // const { registerInstrumentations } = require('@opentelemetry/instrumentation');
@@ -30,21 +30,21 @@ const { getNodeAutoInstrumentations } = require("@opentelemetry/auto-instrumenta
 // diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 const sdk = new opentelemetry.NodeSDK({
-  // traceExporter: new opentelemetry.tracing.ConsoleSpanExporter(),
+  traceExporter: new opentelemetry.tracing.ConsoleSpanExporter(),
   instrumentations: 
     [
       getNodeAutoInstrumentations(),
-      // new ExpressInstrumentation({
-      //   requestHook: (span, requestInfo) => {
-      //     span.setAttribute(
-      //       "http.request.body",
-      //       JSON.stringify(requestInfo.req.body)
-      //     );
-      //   },
-      // }),
+      new ExpressInstrumentation({
+        requestHook: (span, requestInfo) => {
+          span.setAttribute(
+            "http.request.body",
+            JSON.stringify(requestInfo.req.body)
+          );
+        },
+      }),
       // new RouterInstrumentation(),
       // new SocketIoInstrumentation(),
-      // new KafkaJsInstrumentation() 
+      new KafkaJsInstrumentation() 
     ]
 });
 

@@ -3,12 +3,13 @@ const winston = require('winston')
 const options = {
   file: 
   {
-    // level: process.env.LOG_LEVEL || 'debug',
-    // levels: winston.config.npm.levels,
-    filename: './logs/esquire-microservice.log',
+    level: 'info',
+    filename: './logs/simon-microservice.log',
     handleExceptions: true,
+    json: true,
     maxsize: 5242880, // 5MB
-    maxFiles: 5
+    maxFiles: 5,
+    colorize: true, 
   },
   console: {
     level: 'error',

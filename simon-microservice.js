@@ -55,6 +55,7 @@ const consumeMessages = async () => {
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
       console.log({
+        key: message.key.toString(), 
         value: message.value.toString(),
       })
     },
@@ -138,13 +139,20 @@ app.get("/produce", async (_req, res) => {
   //   });
 
   const produceMessages = async () => {
-    const producer = kafkaInst.producer();
+    const producer = kafkaInst.producer({
+      allowAutoTopicCreation: false,
+      transactionTimeout: 30000
+  });
     await producer.connect();
     await producer.send({
       topic: process.env.TOPIC,
       messages: [
         {
           key: `${id}`,
+          headers: {
+            // 'trace-id': `${traceId}`,
+            //  'parent-id': `${parentId}`,
+             'system-id': 'simon-producer' },
           value: JSON.stringify({
             quoteId: `${id}`,
             author: `${author}`,
