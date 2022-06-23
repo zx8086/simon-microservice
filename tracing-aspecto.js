@@ -1,6 +1,9 @@
 /* tracing-aspecto.js */
 "use strict";
 
+const dotenv = require("dotenv");
+dotenv.config();
+
 // OpenTelemetry
 const { Resource } = require("@opentelemetry/resources");
 const { SemanticResourceAttributes } = require("@opentelemetry/semantic-conventions");
@@ -9,7 +12,8 @@ const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
 const { trace } = require("@opentelemetry/api");
 
 // Exporter
-const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
+// const { OTLPTraceExporter } = require("@opentelemetry/exporter-trace-otlp-http");
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
 
 // Instrumentation
 const { getNodeAutoInstrumentations } = require("@opentelemetry/auto-instrumentations-node");
@@ -26,18 +30,21 @@ const { SocketIoInstrumentation } = require('opentelemetry-instrumentation-socke
 module.exports = (serviceName) => {
   const exporter = new OTLPTraceExporter({
     url: "https://collector.aspecto.io/v1/traces",
+    serviceName: serviceName,
     headers: {
       Authorization: process.env.ASPECTO_API_KEY,
+      "Content-Type": "application/json",
     },
   });
 
   const provider = new NodeTracerProvider({
     resource: new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]: serviceName
+      [SemanticResourceAttributes.SERVICE_NAME]: process.env.SERVICE_NAME,
+      [SemanticResourceAttributes.DEPLOYMENT_ENVIRONMENT]: process.env.DEPLOYMENT_ENVIRONMENT
     }),
-    // plugins: {
-    //   kafkajs: { enabled: false, path: 'opentelemetry-plugin-kafkajs' }
-    // }
+    plugins: {
+      kafkajs: { enabled: false, path: 'opentelemetry-plugin-kafkajs' }
+    }
   });
   provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
   provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
@@ -73,7 +80,7 @@ module.exports = (serviceName) => {
     ],
     tracerProvider: provider,
   });
-  return trace.getTracer(serviceName);
+  return trace.getTracer(process.env.SERVICE_NAME);
 };
 
 // "Some problems are so complex that you have to be highly intelligent and well informed just to be undecided about them." - Laurence J. Peter

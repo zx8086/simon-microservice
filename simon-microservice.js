@@ -1,5 +1,8 @@
 "use strict";
 
+// const instrument = require('@aspecto/opentelemetry');
+// instrument({aspectoAuth: '1cbb856b-0558-4e75-876f-3aee212f65c7'});
+
 const dotenv = require("dotenv");
 dotenv.config();
 
