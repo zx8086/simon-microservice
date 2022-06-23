@@ -1,4 +1,4 @@
-const { Kafka } = require("kafkajs");
+const { Kafka, logLevel } = require("kafkajs");
 
 const { KAFKA_USERNAME: username, KAFKA_PASSWORD: password } = process.env;
 const sasl = username && password ? { username, password, mechanism: "plain" } : null;
@@ -11,6 +11,7 @@ const kafka = new Kafka({
   brokers: [process.env.KAFKA_BOOTSTRAP_SERVER],
   // ssl,
   // sasl,
+  logLevel: "debug",
 });
 
 module.exports = kafka;
