@@ -138,6 +138,8 @@ app.get("/produce", async (_req, res) => {
   //     logger.debug("Post to Workplace Search Custom Database");
   //   });
 
+
+
   const produceMessages = async () => {
     const producer = kafkaInst.producer({
       allowAutoTopicCreation: false,
@@ -150,9 +152,10 @@ app.get("/produce", async (_req, res) => {
         {
           key: `${id}`,
           headers: {
-            // 'trace-id': `${traceId}`,
-            //  'parent-id': `${parentId}`,
-             'system-id': 'simon-producer' },
+             domain: `Digital-Selling`,
+             brand: `TH`, 
+             context: `Quotes` 
+            },
           value: JSON.stringify({
             quoteId: `${id}`,
             author: `${author}`,
