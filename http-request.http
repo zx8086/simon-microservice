@@ -1,0 +1,19 @@
+###
+GET http://192.168.0.9:8070/ HTTP/1.1
+Content-Type: application/json
+
+###
+http://192.168.0.9:8070/health HTTP/1.1
+Content-Type: application/json
+
+###
+http://192.168.0.9:8070/error HTTP/1.1
+
+###
+http://192.168.0.9:8070/produce HTTP/1.1
+
+###
+http://192.168.0.9:8070/twilio HTTP/1.1
+
+###
+http://192.168.0.9:8070/simon HTTP/1.1
