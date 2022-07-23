@@ -130,4 +130,6 @@ dist
 .pnp.*
 
 node_modules
+git-story_media
+
 
