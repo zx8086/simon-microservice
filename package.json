@@ -37,6 +37,7 @@
     "@uptrace/node": "^1.0.1",
     "axios": "^0.27.2",
     "cookie-parser": "^1.4.6",
+    "couchbase": "^4.1.1",
     "csurf": "^1.11.0",
     "elastic-apm-node": "^3.36.0",
     "logger": "^0.0.1",
