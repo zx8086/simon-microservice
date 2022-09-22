@@ -9,6 +9,9 @@ const handlers = require('./lib/handlers')
 const services = require('./lib/services')
 const logger = require("./lib/logger");
 
+const quote = require('./lib/quote')
+
+
 const httpLogger = require("./httpLogger");
 const cookieParser = require("cookie-parser");
 // const csrf = require("csurf");
@@ -29,6 +32,8 @@ app.get('/twilio', services.twilio)
 app.get('/kafka', services.kafka)
 app.get('/couchbase', services.couchbase)
 app.get('/workplace', services.workplace)
+// app.get('/quote', quote.quote)
+
 app.use(handlers.notFound)
 app.use(handlers.serverError)
 

@@ -40,6 +40,7 @@
     "couchbase": "^4.1.1",
     "csurf": "^1.11.0",
     "elastic-apm-node": "^3.36.0",
+    "forever": "^4.0.3",
     "logger": "^0.0.1",
     "morgan": "^1.10.0",
     "morgan-json": "^1.1.0",
