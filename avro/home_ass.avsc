@@ -1,0 +1,93 @@
+{
+    "name": "MyClass",
+    "type": "record",
+    "namespace": "com.acme.avro",
+    "fields": [
+        {
+            "name": "headers",
+            "type": "string"
+        },
+        {
+            "name": "key",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        {
+            "name": "data",
+            "type": {
+                "name": "data",
+                "type": "record",
+                "fields": [
+                    {
+                        "name": "entity_id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "state",
+                        "type": "string"
+                    },
+                    {
+                        "name": "attributes",
+                        "type": {
+                            "name": "attributes",
+                            "type": "record",
+                            "fields": [
+                                {
+                                    "name": "unit_of_measurement",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "icon",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "friendly_name",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "last_changed",
+                        "type": "int",
+                        "logicalType": "date"
+                    },
+                    {
+                        "name": "last_updated",
+                        "type": "int",
+                        "logicalType": "date"
+                    },
+                    {
+                        "name": "context",
+                        "type": {
+                            "name": "context",
+                            "type": "record",
+                            "fields": [
+                                {
+                                    "name": "id",
+                                    "type": "string"
+                                },
+                                {
+                                    "name": "parent_id",
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                {
+                                    "name": "user_id",
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

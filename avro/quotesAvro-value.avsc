@@ -1,0 +1,42 @@
+{
+    "name": "quotesAvro",
+    "type": "record",
+    "namespace": "com.siobytes.development.demo",
+    "doc": "Programming Quotes Schema",
+    "fields": [
+      {
+        "name": "id",
+         "doc": "id of the quote",
+         "type": ["null", "string"],
+         "default": null
+      },
+      {
+        "name": "author",
+         "doc": "author of the quote",
+        "type": "string"
+      },
+      { 
+        "name": "quote",
+         "doc": "quote",
+        "type": "string"
+      },
+      { 
+        "name": "url",
+         "doc": "url of the quote",
+         "type": ["null", "string"],
+         "default": null
+      },
+      { 
+        "name": "description",
+         "doc": "description of the quote",
+         "type": ["null", "string"],
+         "default": null
+      },
+      { 
+        "name": "footer",
+         "doc": "Footer by Producer",
+         "type": ["null", "string"],
+         "default": null
+      }
+    ]
+  }

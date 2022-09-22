@@ -1,0 +1,21 @@
+{
+    "name": "header",
+    "type": "record",
+    "namespace": "com.siobytes.quotes",
+    "doc": "Programming Quotes Header Schema",
+    "fields": [
+        {
+            "name": "domain",
+            "type": "string"
+        },
+        {
+            "name": "brand",
+            "type": "string"
+        },
+        {
+            "name": "context",
+            "type": "string"
+        },
+        
+    ]
+}
