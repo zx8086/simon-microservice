@@ -32,6 +32,7 @@ app.use(handlers.notFound)
 app.use(handlers.serverError)
 
 
+
 app.listen(parseInt(PORT, 10), () => {
   console.log(`Listening for requests on http://localhost:${PORT}`)
   logger.info("Starting server.... Process initialized!")
