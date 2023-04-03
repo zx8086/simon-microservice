@@ -5,6 +5,9 @@
 const dotenv = require("dotenv")
 dotenv.config()
 
+const LogRocket = require('logrocket')
+LogRocket.init('fyiyu3/simon-microservice')
+
 const handlers = require('./lib/handlers')
 const services = require('./lib/services')
 const logger = require("./lib/logger")
@@ -17,7 +20,7 @@ const express = require("express")
 const app = express()
 app.disable("x-powered-by")
 
-const PORT = process.env.PORT || 8070
+const PORT = process.env.PORT
 
 app.use(httpLogger)
 app.use(cookieParser())
@@ -30,8 +33,6 @@ app.get('/couchbase', services.couchbase)
 app.get('/workplace', services.workplace)
 app.use(handlers.notFound)
 app.use(handlers.serverError)
-
-
 
 app.listen(parseInt(PORT, 10), () => {
   console.log(`Listening for requests on http://localhost:${PORT}`)

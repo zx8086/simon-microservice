@@ -18,6 +18,8 @@ const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc')
 // const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
 // const { OTLPTraceSpanExporter } = require('@opentelemetry/exporter-trace-otlp-http');
 
+// const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
+
 const { getNodeAutoInstrumentations } = require("@opentelemetry/auto-instrumentations-node");
 const { ExpressInstrumentation } = require("opentelemetry-instrumentation-express");
 const { KafkaJsInstrumentation } = require('opentelemetry-instrumentation-kafkajs');
@@ -30,7 +32,6 @@ const { KafkaJsInstrumentation } = require('opentelemetry-instrumentation-kafkaj
 // diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 const sdk = new opentelemetry.NodeSDK({
-  traceExporter: new opentelemetry.tracing.ConsoleSpanExporter(),
   instrumentations: 
     [
       getNodeAutoInstrumentations(),
@@ -55,7 +56,15 @@ const provider = new NodeTracerProvider({
     }),
 });
 
-const exporter = new OTLPTraceExporter();
+const exporter = new OTLPTraceExporter(   
+    {
+    url: "http://10.80.131.54:4317/v1/traces",
+    // url: "https://collector.dev.shared-services.eu.pvh.cloud/v1/traces",
+    // url: "http://amsdcos25.pvhcorp.com:4318/v1/traces",
+    // optional - collection of custom headers to be sent with each request, empty by default
+    headers: {},
+}  
+);
 
 // --- Metrics Working Target Common
 // const metricExporter = new OTLPMetricExporter({});
