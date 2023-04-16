@@ -14,8 +14,8 @@ const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
 // const { MeterProvider, PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics-base');
 
 // const { OTLPMetricExporter } = require('@opentelemetry/exporter-metrics-otlp-http');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
-// const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
+// const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
 // const { OTLPTraceSpanExporter } = require('@opentelemetry/exporter-trace-otlp-http');
 
 // const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
@@ -58,7 +58,9 @@ const provider = new NodeTracerProvider({
 
 const exporter = new OTLPTraceExporter(   
     {
-    url: "http://10.80.131.54:4317/v1/traces",
+    url: "http://192.168.0.9:4318/v1/traces",
+    // url: "http://otel-http.siobytes.com/v1/traces",
+    // url: "https://apm.siobytes.com:443/v1/traces",
     // url: "https://collector.dev.shared-services.eu.pvh.cloud/v1/traces",
     // url: "http://amsdcos25.pvhcorp.com:4318/v1/traces",
     // optional - collection of custom headers to be sent with each request, empty by default
