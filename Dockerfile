@@ -5,7 +5,8 @@
 # RUN compass compile
 # # Output: css/app.css
 FROM node:16.17.0-bullseye-slim
-# Defaults to production, docker-compose overrides this to development on build and run.
+
+
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 
