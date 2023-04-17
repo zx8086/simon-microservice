@@ -6,3 +6,4 @@ npm-debug.log
 .trunk
 .git
 .vscode
+.DS_Store

@@ -20,7 +20,7 @@ const express = require("express")
 const app = express()
 app.disable("x-powered-by")
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 8070
 
 app.use(httpLogger)
 app.use(cookieParser())

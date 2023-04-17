@@ -132,4 +132,4 @@ dist
 node_modules
 git-story_media
 
-
+.DS_Store
