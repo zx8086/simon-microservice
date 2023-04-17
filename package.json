@@ -4,10 +4,9 @@
   "description": "OpenTelemetry & Kafka Enablement",
   "main": "simon-microservice.js",
   "scripts": {
-    "start": "nodemon simon-microservice.js",
+    "start": "node -r ./tracing-simon.js simon-microservice.js",
     "tracer": "nodemon -r ./tracing-simon.js simon-microservice.js",
     "aspecto": "nodemon -r ./tracing-aspecto.js simon-microservice.js",
-    "aspecto1": "ASPECTO_AUTH='1cbb856b-0558-4e75-876f-3aee212f65c7' node -r @aspecto/opentelemetry/auto-instrument simon-microservice.js",
     "test": "echo 'Testing....' ",
     "linter": "standard --fix"
   },
