@@ -28,21 +28,14 @@ const { KafkaJsInstrumentation } = require('opentelemetry-instrumentation-kafkaj
 // const { registerInstrumentations } = require('@opentelemetry/instrumentation');
 
 // const { diag, DiagConsoleLogger, DiagLogLevel } = require('@opentelemetry/api');
-// // For troubleshooting, set the log level to DiagLogLevel.DEBUG
+// For troubleshooting, set the log level to DiagLogLevel.DEBUG
 // diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 const sdk = new opentelemetry.NodeSDK({
   instrumentations: 
     [
       getNodeAutoInstrumentations(),
-      new ExpressInstrumentation({
-        requestHook: (span, requestInfo) => {
-          span.setAttribute(
-            "http.request.body",
-            JSON.stringify(requestInfo.req.body)
-          );
-        },
-      }),
+      new ExpressInstrumentation(),
       // new RouterInstrumentation(),
       // new SocketIoInstrumentation(),
       new KafkaJsInstrumentation() 
@@ -58,10 +51,10 @@ const provider = new NodeTracerProvider({
 
 const exporter = new OTLPTraceExporter(   
     {
-    url: "http://192.168.0.9:4318/v1/traces",
-    // url: "http://otel-http.siobytes.com",
+    //url: "http://192.168.0.9:4318/v1/traces",
+    url: "https://otel-http.siobytes.com",
     // optional - collection of custom headers to be sent with each request, empty by default
-    headers: {},
+    // headers: {},
 }  
 );
 
