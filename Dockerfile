@@ -35,6 +35,6 @@ COPY . .
 # # Copy compiled CSS styles from builder image.
 # COPY --from=builder /dist/css ./dist/css
 
-CMD [ "node", "-r", "./tracing-simon.js", "simon-microservice.js" ]
+CMD [ "node", "-r", "./tracing-otel.js", "simon-microservice.js" ]
 
 EXPOSE 8070
