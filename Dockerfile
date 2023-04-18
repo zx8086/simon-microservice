@@ -4,9 +4,10 @@
 # WORKDIR /dist
 # RUN compass compile
 # # Output: css/app.css
+
 FROM node:16.17.0-bullseye-slim
 
-
+# Set environment variables
 ARG NODE_ENV=production
 ENV NODE_ENV $NODE_ENV
 
@@ -37,4 +38,3 @@ COPY . .
 CMD [ "npm", "start" ]
 
 EXPOSE 8070
-
