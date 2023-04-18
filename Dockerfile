@@ -5,7 +5,7 @@
 # RUN compass compile
 # # Output: css/app.css
 
-FROM node:16.17.0-bullseye-slim
+FROM node:16.20.0-bullseye-slim
 
 # Set environment variables
 ARG NODE_ENV=production
@@ -22,7 +22,7 @@ USER node
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
 COPY package.json package-lock.json* ./
-RUN npm ci && npm cache clean --force;
+RUN npm ci && npm cache clean --force
 
 COPY . .
 
@@ -35,6 +35,6 @@ COPY . .
 # # Copy compiled CSS styles from builder image.
 # COPY --from=builder /dist/css ./dist/css
 
-CMD [ "npm", "start" ]
+CMD [ "node", "-r", "./tracing-simon.js", "simon-microservice.js" ]
 
 EXPOSE 8070

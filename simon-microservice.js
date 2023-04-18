@@ -3,9 +3,6 @@
 const dotenv = require("dotenv")
 dotenv.config()
 
-const LogRocket = require('logrocket')
-LogRocket.init('fyiyu3/simon-microservice')
-
 const handlers = require('./lib/handlers')
 const services = require('./lib/services')
 const logger = require("./lib/logger")
@@ -32,13 +29,15 @@ app.get('/trace', handlers.trace)
 app.use(handlers.notFound)
 app.use(handlers.serverError)
 
-app.listen(parseInt(PORT, 10), () => {
-  console.log(`Listening for requests on http://localhost:${PORT}`)
-  logger.info("Starting server.... Process initialized!")
-})
+const server = app.listen(parseInt(PORT, 10), () => 
+  console.log(`Listening at port ${PORT}`),
+  logger.info("Starting server.... Process initialized!"),
+  console.log("Starting server.... Process initialized!")
+  )
+module.exports = server
 
 process.on("SIGTERM", () => {
-  app.close(() => {
+  server.close(() => {
     logger.info("Stopping server.... Process terminated!")
     console.log("Process terminated")
   })
