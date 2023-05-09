@@ -3,6 +3,8 @@
 const dotenv = require("dotenv")
 dotenv.config()
 
+const PORT = process.env.PORT || 8070
+
 const handlers = require('./lib/handlers')
 const services = require('./lib/services')
 const logger = require("./lib/logger")
@@ -15,7 +17,6 @@ const express = require("express")
 const app = express()
 app.disable("x-powered-by")
 
-const PORT = process.env.PORT || 8070
 
 app.use(httpLogger)
 app.use(cookieParser())
@@ -24,7 +25,7 @@ app.get('/health', handlers.health)
 app.get('/trace', handlers.trace)
 // app.get('/twilio', services.twilio)
 // app.get('/kafka', services.kafka)
-// app.get('/couchbase', services.couchbase)
+app.get('/couchbase', services.sendDataToCouchbase)
 // app.get('/workplace', services.workplace)
 app.use(handlers.notFound)
 app.use(handlers.serverError)
@@ -42,6 +43,5 @@ process.on("SIGTERM", () => {
     console.log("Process terminated")
   })
 })
-
 
 // "Beware of bugs in the above code; I have only proved it correct, not tried it." - Donald Knuth

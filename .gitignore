@@ -133,3 +133,8 @@ node_modules
 git-story_media
 
 .DS_Store
+test.js
+colors.js
+hello.js
+os.js
+
