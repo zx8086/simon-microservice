@@ -7,7 +7,7 @@
     "start": "nodemon -r ./tracing-otel.js simon-microservice.js",
     "tracer": "nodemon -r ./tracing-simon.js simon-microservice.js",
     "aspecto": "nodemon -r ./tracing-aspecto.js simon-microservice.js",
-    "test": "echo 'Testing....' ",
+    "test": "lab -v **/*.test.js",
     "linter": "standard --fix"
   },
   "repository": {
@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/zx8086/simon-microservice#readme",
   "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@hapi/hapi": "^21.3.2",
     "@kafkajs/confluent-schema-registry": "^3.2.1",
     "@opentelemetry/api": "^1.4.1",
     "@opentelemetry/auto-instrumentations-node": "^0.28.0",
@@ -42,9 +44,11 @@
     "elastic-apm-node": "^3.36.0",
     "express": "^4.18.2",
     "fetch": "^1.1.0",
-    "forever": "^4.0.3",
+    "forever": "^0.14.2",
     "fs": "^0.0.1-security",
     "http": "^0.0.1-security",
+    "infisical-node": "^1.2.1",
+    "joi": "^17.9.2",
     "kafkajs": "^2.2.0",
     "logger": "^0.0.1",
     "morgan": "^1.10.0",
@@ -57,5 +61,9 @@
     "standard": "^17.0.0",
     "twilio": "^4.10.0",
     "winston": "^3.7.2"
+  },
+  "devDependencies": {
+    "@hapi/code": "^9.0.3",
+    "@hapi/lab": "^25.1.2"
   }
 }

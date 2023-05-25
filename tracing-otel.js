@@ -26,6 +26,7 @@ const traceExporter = new OTLPTraceExporter(
     {url: "https://otel-http.siobytes.com",}
     )
 
+
 const sdk = new opentelemetry.NodeSDK({
   resource: new Resource({
         [SemanticResourceAttributes.SERVICE_NAME]: process.env.SERVICE_NAME,
