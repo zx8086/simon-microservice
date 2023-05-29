@@ -5,8 +5,8 @@
   "main": "simon-microservice.js",
   "scripts": {
     "start": "nodemon -r ./tracing-otel.js simon-microservice.js",
-    "ttt": "echo 'Testing....' ",
-    "test": "lab -v **/*.test.js",
+    "test": "echo 'Testing....' ",
+    "ttt": "lab -v **/*.test.js",
     "linter": "standard --fix"
   },
   "repository": {
@@ -45,6 +45,7 @@
     "fetch": "^1.1.0",
     "forever": "^0.14.2",
     "fs": "^0.0.1-security",
+    "hapi-geo-locate": "^4.1.1",
     "http": "^0.0.1-security",
     "infisical-node": "^1.2.1",
     "joi": "^17.9.2",
