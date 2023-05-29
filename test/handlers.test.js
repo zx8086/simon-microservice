@@ -20,7 +20,27 @@ describe('GET /', () => {
         const res = await server.inject({
             method: 'get',
             url: '/'
-        });
+        })
         expect(res.statusCode).to.equal(200)
+    })
+})
+
+describe('GET /badRequest', () => {
+    let server
+
+    beforeEach(async () => {
+        server = await init()
+    })
+
+    afterEach(async () => {
+        await server.stop()
+    })
+
+    it('responds with 400', async () => {
+        const res = await server.inject({
+            method: 'get',
+            url: '/badRequest'
+        })
+        expect(res.statusCode).to.equal(400)
     })
 })

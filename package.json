@@ -5,8 +5,8 @@
   "main": "simon-microservice.js",
   "scripts": {
     "start": "nodemon -r ./tracing-otel.js simon-microservice.js",
-    "test": "echo 'Testing....' ",
-    "ttt": "lab -v **/*.test.js",
+    "ttt": "echo 'Testing....' ",
+    "test": "lab -v **/*.test.js",
     "linter": "standard --fix"
   },
   "repository": {
