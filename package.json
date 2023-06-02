@@ -37,7 +37,7 @@
     "@slack/webhook": "^6.1.0",
     "axios": "^0.27.2",
     "cookie-parser": "^1.4.6",
-    "couchbase": "^4.1.1",
+    "couchbase": "^4.2.4",
     "csurf": "^1.11.0",
     "dotenv": "^16.0.3",
     "elastic-apm-node": "^3.36.0",

@@ -1,0 +1,1 @@
+{"cells":[{"kind":2,"language":"SQL++","value":"SELECT * FROM `default`.`customers`.`accounts` WHERE isActive= true LIMIT 10;"}]}
