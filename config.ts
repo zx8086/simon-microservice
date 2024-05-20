@@ -13,9 +13,16 @@ export interface ElysiaConfig {
   BASE_URL: string
 }
 
+export interface OpenTelemetryConfig {
+  SERVICE_NAME: string;
+  SERVICE_VERSION: string
+  DEPLOYMENT_ENVIRONMENT: string
+}
+
 export interface Config {
   couchbase: CouchbaseConfig;
   elysiaJs: ElysiaConfig;
+  telemetry: OpenTelemetryConfig;
 }
 
 function getOrThrow(envVariable: string | undefined, name: string): string {
@@ -39,9 +46,16 @@ const elysiaConfig: ElysiaConfig = {
   BASE_URL: getOrThrow((Bun.env as Record<string, string>)['BASE_URL'], 'BASE_URL') || 'http://localhost',
 };
 
+const telemetryConfig: OpenTelemetryConfig = {
+  SERVICE_NAME: getOrThrow((Bun.env as Record<string, string>)['SERVICE_NAME'], 'SERVICE_NAME'),
+  SERVICE_VERSION: getOrThrow((Bun.env as Record<string, string>)['SERVICE_VERSION'], 'SERVICE_VERSION'),
+  DEPLOYMENT_ENVIRONMENT: getOrThrow((Bun.env as Record<string, string>)['DEPLOYMENT_ENVIRONMENT'], 'DEPLOYMENT_ENVIRONMENT'),
+};
+
 const config: Config = {
   couchbase: couchbaseConfig,
   elysiaJs: elysiaConfig,
+  telemetry: telemetryConfig
 };
 
 export default config;
