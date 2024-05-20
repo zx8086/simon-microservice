@@ -23,8 +23,15 @@
 - [x] Synk
 - [x] Aspecto
 - [ ] Confluent Cloud Span, Logs & Metrics
+- [ ] Apache Kafka Local
+- [ ] AWS MSK
 - [ ] Code Coverage
 - [ ] GitHub Codespace
+- [x] Jetbrains Webstorm
+- [x] Jetbrains Spaces
+- [ ] Capella Full Text Search
+- [ ] Capella Vector Search
+- [ ] Caching (redis)
 
 ---
 
