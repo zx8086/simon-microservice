@@ -1,6 +1,6 @@
 `use strict`
 
-const { start } = require('./lib/server')
+const { start } = require('./app/src/lib/server')
 
 start()
 

@@ -1,5 +1,5 @@
 const Kafka = require('kafkajs');
-const { configFromPath } = require('./lib/util');
+const { configFromPath } = require('./app/src/lib/util');
 
 function createConfigMap(config) {
   if (config.hasOwnProperty('security.protocol')) {
