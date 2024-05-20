@@ -1,5 +1,5 @@
 {
-  "dependencies": { "couchbase": "^4.3.1", "elysia": "^1.0.20" },
+  "dependencies": { "couchbase": "^4.3.1", "elysia": "^1.0.20", "kafkajs": "^2.2.4" },
   "devDependencies": {
     "@types/bun": "^1.1.2",
     "typescript": "^5.4.5"
