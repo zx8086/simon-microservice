@@ -10,10 +10,6 @@
 
 > "We who cut mere stones must always be envisioning cathedrals." - Quarry worker's creed
 
-## Workflow Status
-
-[![Dependency Review](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/zx8086/simon-microservice/actions/workflows/dependency-review.yml)
-
 ---
 
 ### To Add

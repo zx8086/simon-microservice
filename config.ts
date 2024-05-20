@@ -35,8 +35,8 @@ const couchbaseConfig: CouchbaseConfig = {
 };
 
 const elysiaConfig: ElysiaConfig = {
-  PORT: getOrThrow(Bun.env.PORT, 'PORT') || '3010',
-  BASE_URL: getOrThrow(Bun.env.BASE_URL, 'BASE_URL') || 'http://localhost',
+  PORT: getOrThrow((Bun.env as Record<string, string>)['PORT'], 'PORT') || '3010',
+  BASE_URL: getOrThrow((Bun.env as Record<string, string>)['BASE_URL'], 'BASE_URL') || 'http://localhost',
 };
 
 const config: Config = {
