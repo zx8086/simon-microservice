@@ -13,7 +13,7 @@ if (typeof app === 'undefined') {
 controller(app); // The app instance is passed to the controller
 
 // Start listening on the configured port
-const DEFAULT_PORT = 3000;
+const DEFAULT_PORT: number = 3000;
 
 let port :number = parseInt(config.elysiaJs.PORT, 10);
 if (isNaN(port)) {

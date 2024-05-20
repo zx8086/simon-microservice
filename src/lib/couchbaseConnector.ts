@@ -2,7 +2,6 @@
 import config from './../../config';
 import { connect, type Cluster, type Bucket, type Scope, type Collection } from 'couchbase';
 
-// Define the interface for the connection details
 export interface capellaConn {
     cluster: Cluster;
     bucket: Bucket;
@@ -11,7 +10,6 @@ export interface capellaConn {
     connect: typeof connect;
 }
 
-// Connection function using the defined interface
 export async function clusterConn(): Promise<capellaConn> {
     console.log("Attempting to connect to Couchbase...");
 
