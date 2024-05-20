@@ -22,5 +22,5 @@ if (isNaN(port)) {
 }
 
 app.listen(port, () => {
-    console.log(`URL Shortener is running on port ${port}`);
+    console.log(`Server is running on port ${port}`);
 });
