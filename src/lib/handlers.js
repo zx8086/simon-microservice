@@ -470,6 +470,8 @@ exports.deleteAccountDoc = async (request, h) => {
   }
 }
 
+
+
 exports.traces = async (request, h) => {
   try {
     const response = await fetch("https://gateway.siobytes.com/owusu/trace")
