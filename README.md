@@ -31,7 +31,7 @@
 
 ---
 
-### Tracing Code for Node.js (Aspecto Version) (To be changed)
+### Tracing Code for Node.js (Aspecto Version)
 
 ```js
 "use strict";
@@ -103,8 +103,6 @@ module.exports = (serviceName) => {
   return trace.getTracer(serviceName);
 };
 ```
-
-~~Sharing is NOT about Caring.~~
 
 [Siobytes](http://code.siobytes.com)
 
