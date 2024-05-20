@@ -1,4 +1,4 @@
-import type {Cluster, PingResult} from 'couchbase';
+import type {PingResult} from 'couchbase';
 import { getCluster } from './clusterProvider';
 import type {
     ClusterConfig,
