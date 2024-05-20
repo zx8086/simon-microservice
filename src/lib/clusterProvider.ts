@@ -1,4 +1,4 @@
-import { clusterConn, type capellaConn } from './couchbaseConnector.ts';
+import { clusterConn, type capellaConn } from './couchbaseConnector';
 
 let connection: capellaConn | null = null;
 

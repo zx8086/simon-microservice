@@ -1,5 +1,5 @@
 // src/lib/couchbaseConnector.ts
-import config from '../../config.ts';
+import config from './../../config';
 import { connect, type Cluster, type Bucket, type Scope, type Collection } from 'couchbase';
 
 // Define the interface for the connection details
