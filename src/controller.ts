@@ -4,7 +4,7 @@ import {pingCluster} from './lib/clusterOperations';
 import {fetchQuoteFromAPI} from "./services";
 
 export const controller = (app: Elysia): void => {
-    app.get("/health", async (context): Promise<any> => {
+    app.get("/health", async (): Promise<any> => {
         try{
             const pingResult = await pingCluster();
             const unhealthyServices: string[] = [];
@@ -30,7 +30,7 @@ export const controller = (app: Elysia): void => {
         }
     });
 
-    app.get("/quote", async (context): Promise<any> => {
+    app.get("/quote", async (): Promise<any> => {
         try {
             return await fetchQuoteFromAPI();
         }
