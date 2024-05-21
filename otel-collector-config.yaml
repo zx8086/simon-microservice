@@ -1,0 +1,62 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+processors:
+  batch:
+
+exporters:
+#   Data sources: traces, metrics, logs
+  file:
+    path: filename.json
+
+  # Data sources: traces
+#  otlp/jaeger:
+#    endpoint: jaeger-server:4317
+#    tls:
+#      cert_file: cert.pem
+#      key_file: cert-key.pem
+
+  # Data sources: traces, metrics, logs
+  kafka:
+    protocol_version: 2.0.0
+    brokers:
+      - 192.168.0.11:29092
+
+  # Data sources: traces, metrics, logs
+  # NOTE: Prior to v0.86.0 use `logging` instead of `debug`
+  debug:
+    verbosity: detailed
+
+  # Data sources: metrics
+#  prometheus:
+#    endpoint: 0.0.0.0:8889
+#    namespace: default
+
+  # Data sources: traces
+  zipkin:
+    endpoint: http://192.168.0.11:9411/api/v2/spans
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [zipkin]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [kafka]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [kafka]
