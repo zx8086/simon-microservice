@@ -1,3 +1,4 @@
+import { dns } from "bun";
 import type { QuoteResponse } from './lib/interfaces';
 import { saveDataToCapella } from "./lib/capellaWriteOperation";
 import { getKafkaProducer } from './lib/kafkaConnectionProvider.ts';
@@ -8,8 +9,12 @@ const REQUEST_HEADERS = {
     headers: { "Content-Type": "application/json" }
 };
 
+dns.prefetch(QUOTABLE_API_URL);
+
 export async function fetchQuoteFromAPI(): Promise<QuoteResponse> {
     console.log("Sending request to Quotable API...");
+
+    console.log(dns.getCacheStats());
 
     const response :any = await fetch(QUOTABLE_API_URL, REQUEST_HEADERS);
     const data : QuoteResponse = await response.json();
@@ -40,5 +45,6 @@ export async function fetchQuoteFromAPI(): Promise<QuoteResponse> {
     await saveDataToCapella(docId, data);
 
     console.log("Finished storing data to Couchbase.");
+    console.log(dns.getCacheStats());
     return data;
 }
