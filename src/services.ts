@@ -14,8 +14,6 @@ dns.prefetch(QUOTABLE_API_URL);
 export async function fetchQuoteFromAPI(): Promise<QuoteResponse> {
     console.log("Sending request to Quotable API...");
 
-    console.log(dns.getCacheStats());
-
     const response :any = await fetch(QUOTABLE_API_URL, REQUEST_HEADERS);
     const data : QuoteResponse = await response.json();
 
