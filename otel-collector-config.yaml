@@ -52,11 +52,11 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [zipkin]
-    metrics:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [kafka]
-    logs:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [kafka]
+#    metrics:
+#      receivers: [otlp]
+#      processors: [batch]
+#      exporters: [kafka]
+#    logs:
+#      receivers: [otlp]
+#      processors: [batch]
+#      exporters: [kafka]

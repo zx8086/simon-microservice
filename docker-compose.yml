@@ -36,6 +36,8 @@ services:
       - opentelemetry
       - otel-collector
       - demo
+    depends_on:
+      - kafka
     volumes:
       - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
     ports:
