@@ -1,5 +1,5 @@
 // interfaces.ts
-import {Bucket, Cluster, Collection, Scope} from "couchbase";
+import type {Bucket, Cluster, Collection, Scope} from "couchbase";
 
 export interface ClusterConfig {
     cluster: Cluster;
