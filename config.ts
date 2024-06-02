@@ -1,30 +1,5 @@
 // config.ts
-export interface CouchbaseConfig {
-  URL: string;
-  USERNAME: string;
-  PASSWORD: string;
-  BUCKET: string;
-  SCOPE: string;
-  COLLECTION: string;
-}
-
-export interface ElysiaConfig {
-  PORT: string;
-  BASE_URL: string
-}
-
-export interface OpenTelemetryConfig {
-  SERVICE_NAME: string;
-  SERVICE_VERSION: string
-  DEPLOYMENT_ENVIRONMENT: string
-}
-
-export interface Config {
-  couchbase: CouchbaseConfig;
-  elysiaJs: ElysiaConfig;
-  telemetry: OpenTelemetryConfig;
-}
-
+import type { CouchbaseConfig, ElysiaConfig, OpenTelemetryConfig, Config } from './src/config/types'
 function getOrThrow(envVariable: string | undefined, name: string): string {
   if (!envVariable) {
     throw new Error(`Required environment variable ${name} is not set`);
