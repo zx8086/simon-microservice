@@ -1,5 +1,6 @@
 // config.ts
 import type { CouchbaseConfig, ElysiaConfig, OpenTelemetryConfig, Config } from './src/config/types'
+
 function getOrThrow(envVariable: string | undefined, name: string): string {
   if (!envVariable) {
     throw new Error(`Required environment variable ${name} is not set`);

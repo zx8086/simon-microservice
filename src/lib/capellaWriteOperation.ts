@@ -6,8 +6,8 @@ export async function saveDataToCapella(id: string, data: any) {
     const connection = await getCluster();
 
     // Specify your scope and collection
-    const scope :Scope = connection.bucket.scope('quotes');
-    const collection :Collection = scope.collection('general');
+    const scope :Scope = connection.bucket.scope('test');
+    const collection :Collection = scope.collection('quotes');
 
     // Store the document in Couchbase
     try {
