@@ -25,7 +25,7 @@ const provider = new NodeTracerProvider({
 });
 
 const otlpExporter = new OTLPTraceExporter({
-    url: "http://localhost:4318/v1/traces",
+    url: "https://otel-http-traces.siobytes.com",
     headers: {
         "Content-Type": "application/json",
     },
