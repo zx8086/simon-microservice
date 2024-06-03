@@ -1,4 +1,4 @@
-import config from './../config';
+import config from './config';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import {
     ConsoleSpanExporter,
@@ -6,7 +6,11 @@ import {
     NodeTracerProvider,
     BatchSpanProcessor
 } from '@opentelemetry/sdk-trace-node';
-// import {getNodeAutoInstrumentations} from '@opentelemetry/auto-instrumentations-node';
+// import {
+//     MeterProvider,
+//     PeriodicExportingMetricReader
+// } from '@opentelemetry/sdk-metrics-base';
+// import { OTLPMetricExporter } from '@opentelemetry/exporter-metric-otlp';
 import {Resource} from '@opentelemetry/resources';
 import {
     SEMRESATTRS_SERVICE_NAME,
@@ -26,24 +30,36 @@ const resourceProperties = {
     [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]: config.telemetry.DEPLOYMENT_ENVIRONMENT,
 };
 
-const createOTLPExporter = (url: string, headers: { [key: string]: string }) => new OTLPTraceExporter({url, headers});
+const createOTLPTraceExporter = (url: string, headers: { [key: string]: string }) => new OTLPTraceExporter({url, headers});
+// const createOTLPMetricExporter = (url: string, headers: { [key: string]: string }) => new OTLPMetricExporter({url, headers});
 
 const provider = new NodeTracerProvider({resource: new Resource(resourceProperties)});
 
-const otlpExporter = createOTLPExporter(config.telemetry.OTLP_ENDPOINT, {"Content-Type": "application/json"});
+const otlpTraceExporter = createOTLPTraceExporter(config.telemetry.OTLP_TRACES_ENDPOINT, {"Content-Type": "application/json"});
+// const otlpMetricExporter = createOTLPMetricExporter(config.telemetry.OTLP_METRICS_ENDPOINT, {"Content-Type": "application/json"});
 
-provider.addSpanProcessor(new BatchSpanProcessor(otlpExporter));
+provider.addSpanProcessor(new BatchSpanProcessor(otlpTraceExporter));
 provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
 provider.register();
 
+// Creating MetricReader with OTLPMetricExporter
+// new MeterProvider({
+//     resource: new Resource(resourceProperties),
+//     metricReader: new PeriodicExportingMetricReader({
+//         interval: 60000,
+//         exporter: otlpMetricExporter,
+//     }),
+// });
+
 registerInstrumentations({
     instrumentations: [
-        // getNodeAutoInstrumentations(),
         new HttpInstrumentation(),
+        // new RuntimeNodeInstrumentation({
+        //     eventLoopUtilizationMeasurementInterval: 5000,
+        // }),
     ],
     tracerProvider: provider,
 });
-
 process.on('SIGTERM', () => {
     provider.shutdown()
         .then(() => console.log('Tracing terminated'))

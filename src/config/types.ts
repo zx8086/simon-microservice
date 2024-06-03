@@ -16,7 +16,9 @@ export interface OpenTelemetryConfig {
     SERVICE_NAME: string;
     SERVICE_VERSION: string
     DEPLOYMENT_ENVIRONMENT: string
-    OTLP_ENDPOINT: string
+    OTLP_TRACES_ENDPOINT: string
+    OTLP_METRICS_ENDPOINT: string
+    OTLP_LOGS_ENDPOINT: string
 }
 
 export interface Config {

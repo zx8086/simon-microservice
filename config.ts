@@ -26,7 +26,9 @@ const telemetryConfig: OpenTelemetryConfig = {
   SERVICE_NAME: getOrThrow((Bun.env as Record<string, string>)['SERVICE_NAME'], 'SERVICE_NAME'),
   SERVICE_VERSION: getOrThrow((Bun.env as Record<string, string>)['SERVICE_VERSION'], 'SERVICE_VERSION'),
   DEPLOYMENT_ENVIRONMENT: getOrThrow((Bun.env as Record<string, string>)['DEPLOYMENT_ENVIRONMENT'], 'DEPLOYMENT_ENVIRONMENT'),
-  OTLP_ENDPOINT: getOrThrow((Bun.env as Record<string, string>)['OTLP_ENDPOINT'], 'OTLP_ENDPOINT'),
+  OTLP_TRACES_ENDPOINT: getOrThrow((Bun.env as Record<string, string>)['OTLP_TRACES_ENDPOINT'], 'OTLP_TRACES_ENDPOINT'),
+  OTLP_METRICS_ENDPOINT: getOrThrow((Bun.env as Record<string, string>)['OTLP_METRICS_ENDPOINT'], 'OTLP_METRICS_ENDPOINT'),
+  OTLP_LOGS_ENDPOINT: getOrThrow((Bun.env as Record<string, string>)['OTLP_LOGS_ENDPOINT'], 'OTLP_LOGS_ENDPOINT')
 };
 
 const config: Config = {
