@@ -1,4 +1,5 @@
 // index.ts
+import './tracing';
 import Elysia from "elysia";
 import { controller } from "./controller";
 import config from './../config';
