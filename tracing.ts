@@ -1,5 +1,6 @@
-import config from './config';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+
+import config from './config';
 import {
     ConsoleSpanExporter,
     SimpleSpanProcessor,
@@ -20,9 +21,11 @@ import {
 import {registerInstrumentations} from "@opentelemetry/instrumentation";
 import {OTLPTraceExporter} from "@opentelemetry/exporter-trace-otlp-http";
 
+import {getNodeAutoInstrumentations} from "@opentelemetry/auto-instrumentations-node";
+
 import {diag, DiagConsoleLogger, DiagLogLevel} from '@opentelemetry/api';
 // For troubleshooting, set the log level to DiagLogLevel.DEBUG
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
+diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 const resourceProperties = {
     [SEMRESATTRS_SERVICE_NAME]: config.telemetry.SERVICE_NAME,
@@ -53,6 +56,7 @@ provider.register();
 
 registerInstrumentations({
     instrumentations: [
+        getNodeAutoInstrumentations(),
         new HttpInstrumentation(),
         // new RuntimeNodeInstrumentation({
         //     eventLoopUtilizationMeasurementInterval: 5000,
